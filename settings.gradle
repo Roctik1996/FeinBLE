@@ -1,0 +1,3 @@
+rootProject.name='Fein BLE'
+include ':app'
+include ':feinblelib'
