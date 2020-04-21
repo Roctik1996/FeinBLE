@@ -13,7 +13,7 @@
     <string name="disconnect">Disconnect</string>
 
     <string name="notifyTitle">Title</string>
-    <string name="gpsNotifyMsg">gpsNotifyMsg</string>
+    <string name="gpsNotifyMsg">Please turn on gps</string>
     <string name="setting">Setting</string>
     <string name="cancel">Cancel</string>
     <string name="enter">Enter</string>

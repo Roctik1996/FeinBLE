@@ -5,7 +5,7 @@ Android Bluetooth Low Energy
 - Filtering, scanning, reading, writing and cancellation in a simple way.
 - Support multi device connections  
 - Support reconnection  
-- Support configuration timeout for conncet or operation 
+- Support configuration timeout for connect or operation 
 
 # Usage
 
@@ -29,7 +29,7 @@ Android Bluetooth Low Energy
                 .setReConnectCount(1, 5000)
 	            .setSplitWriteNum(20)
 	            .setConnectOverTime(10000)
-                .setOperateTimeout(5000);=
+                .setOperateTimeout(5000);
 
 - #### Scan
 
@@ -157,7 +157,7 @@ Android Bluetooth Low Energy
 	
 		void read(BleDevice bleDevice, BleReadCallback callback){
             @Override
-            public void onReadSuccess(byte[] data) {
+            public void onReadSuccess(HashMap data) {
 
             }
 

@@ -382,23 +382,31 @@ public class BleManager {
                                 Integer current,
                                 final BleReadCallback callback) {
         byte[] data = new byte[]{Sender_ID, Destination_ID, 0x04, 0x00, 0x40, 0x00, current.byteValue()};
-        BleWriteCallback writeCallback = new BleWriteCallback() {
-            @Override
-            public void onWriteSuccess(int current, int total, byte[] justWrite) {
-                if (callback != null) {
-                    BleManager.getInstance().read(bleDevice, callback);
-                }
-            }
 
-            @Override
-            public void onWriteFailure(BleException exception) {
-                if (callback != null) {
-                    callback.onReadFailure(exception);
+        if (current>=1&&current<=100) {
+            BleWriteCallback writeCallback = new BleWriteCallback() {
+                @Override
+                public void onWriteSuccess(int current, int total, byte[] justWrite) {
+                    if (callback != null) {
+                        BleManager.getInstance().read(bleDevice, callback);
+                    }
                 }
-            }
-        };
 
-        write(bleDevice, dataWithChecksum(data), writeCallback);
+                @Override
+                public void onWriteFailure(BleException exception) {
+                    if (callback != null) {
+                        callback.onReadFailure(exception);
+                    }
+                }
+            };
+
+            write(bleDevice, dataWithChecksum(data), writeCallback);
+        }
+        else{
+            if (callback != null) {
+                callback.onReadFailure(new OtherException("Current value must be >=1 and <=100"));
+            }
+        }
     }
 
     /**
