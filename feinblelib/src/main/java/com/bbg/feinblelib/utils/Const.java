@@ -47,8 +47,7 @@ class Const {
             "ERROR_COUNTER",
             "EMPTY_1",
             "EMPTY_2",
-            "FAN_ON_COUNTER",
-            "KEY_32"
+            "FAN_ON_COUNTER"
     };
 
     final static String[] keyForCurrentBatteryData = new String[]{
@@ -77,8 +76,7 @@ class Const {
             "ERROR_COUNTER",
             "STATUS",
             "SOC",
-            "FAN_ON_COUNTER",
-            "KEY_32"
+            "FAN_ON_COUNTER"
     };
 
     final static String[] keyForCurrentChargerData = new String[]{
