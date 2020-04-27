@@ -106,7 +106,7 @@ Android Bluetooth Low Energy
 
 	`cancelScan()`
 
-		instance.cancelScan();
+		instance.cancelScan()
 
 	Tips:
 	- If this method is called, if it is still in the scan state, it will end immediately, and callback the `onScanFinished` method.
