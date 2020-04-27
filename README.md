@@ -315,7 +315,7 @@ Android Bluetooth Low Energy
 
 - #### requestConnectionPriority
 
-	`requestConnectionPriority(BleDevice bleDevice,int connectionPriority) : Boolean`
+	`requestConnectionPriority(bleDevice: BleDevice?, connectionPriority: Int): Boolean`
 
 	Tips:
 	- Request a specific connection priority. Must be one of{@link BluetoothGatt#CONNECTION_PRIORITY_BALANCED}, {@link BluetoothGatt#CONNECTION_PRIORITY_HIGH} or {@link BluetoothGatt#CONNECTION_PRIORITY_LOW_POWER}.
