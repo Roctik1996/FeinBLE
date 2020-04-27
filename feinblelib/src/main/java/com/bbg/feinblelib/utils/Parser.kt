@@ -1,0 +1,81 @@
+package com.bbg.feinblelib.utils
+
+import java.util.*
+import kotlin.experimental.inv
+
+object Parser {
+    /**
+     * Response parser
+     *
+     * @param data - array of bytes
+     *
+     * @return parsed value
+     */
+    @ExperimentalUnsignedTypes
+    fun parseCommand(data: ByteArray): HashMap<*, *> {
+        val parseResult = HashMap<String?, String>()
+        val result = StringBuilder()
+        if (data[data.size - 1] == getChecksum(data)) {
+            when (getCommand(data.toUByteArray())) {
+                "0x0010" -> {
+                    var i = 5
+                    while (i < data.size - 1) {
+                        result.append(data[i].toUByte() and 255u).append(".")
+                        i++
+                    }
+                    parseResult[Const.protocol] = result.toString()
+                    return parseResult
+                }
+                "0x0040" -> {
+                    var i = 6
+                    while (i < data.size - 1) {
+                        result.append(data[i].toUByte() and 255u)
+                        i++
+                    }
+                    parseResult[Const.chargingMode] = result.toString()
+                    return parseResult
+                }
+                "0x0041" -> {
+                    var i = 6
+                    while (i < data.size - 1) {
+                        parseResult[Const.currentChargingMode[i - 6]] = (data[i].toUByte() and 255u).toString()
+                        i++
+                    }
+                    return parseResult
+                }
+                "0x0080" -> return getValues(data, *Const.batteryLogMemory)
+                "0x0082" -> return getValues(data, *Const.batterySetsStored)
+                "0x0084" -> return getValues(data, *Const.keyForSets)
+                "0x0085" -> return getValues(data, *Const.keyForCurrentBatteryData)
+                "0x0090" -> return getValues(data, *Const.keyForCurrentChargerData)
+            }
+        }
+        return parseResult
+    }
+
+    @ExperimentalUnsignedTypes
+    private fun getValues(data: ByteArray, vararg keys: String): HashMap<*, *> {
+        val parseResult = HashMap<String, String>()
+        for ((k, i) in (5 until data.size - 1).withIndex()) {
+            parseResult[keys[k]] = (data[i].toUByte() and 255u).toString()
+        }
+        return parseResult
+    }
+
+    private fun getChecksum(data: ByteArray): Byte {
+        var sum: Byte = 0
+        for (i in 0 until data.size - 1) {
+            sum = (sum + data[i]).toByte()
+        }
+        return ((sum.inv() + 1).toByte())
+    }
+
+    @ExperimentalUnsignedTypes
+    private fun getCommand(data: UByteArray): String {
+        var cmd = ""
+        if (data.size >= 8) {
+            cmd = "0x0" + Integer.toHexString(data[3].toInt()) + Integer.toHexString((data[4]).toInt())
+        }
+        return cmd
+    }
+}

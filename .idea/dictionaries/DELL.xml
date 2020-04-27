@@ -2,6 +2,8 @@
   <dictionary name="DELL">
     <words>
       <w>feinblelib</w>
+      <w>rssi</w>
+      <w>uuids</w>
     </words>
   </dictionary>
 </component>

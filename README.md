@@ -11,46 +11,35 @@ Android Bluetooth Low Energy
 
 - #### Init
     
-        BleManager.getInstance().init(getApplication());
-
-- #### Determine whether the current Android system supports BLE
-
-        boolean isSupportBle()
+        instance.init(application)
 
 - #### Open or close Bluetooth
 
-		void enableBluetooth()
-		void disableBluetooth()
+		fun enableBluetooth()
+		fun disableBluetooth()
 
 - #### Initialization configuration
 
-        BleManager.getInstance()
+        instance
                 .enableLog(true)
                 .setReConnectCount(1, 5000)
 	            .setSplitWriteNum(20)
 	            .setConnectOverTime(10000)
-                .setOperateTimeout(5000);
+                .setOperateTimeout(5000)
 
 - #### Scan
 
-	`void scan(BleScanCallback callback)`
+	`scan(BleScanCallback callback)`
 
-        BleManager.getInstance().scan(new BleScanCallback() {
-            @Override
-            public void onScanStarted(boolean success) {
-
+        instance.scan(object :BleScanCallback(){
+            override fun onScanFinished(scanResultList: List<BleDevice>?) {
             }
 
-            @Override
-            public void onScanning(BleDevice bleDevice) {
-
+            override fun onScanStarted(success: Boolean) {
             }
 
-            @Override
-            public void onScanFinished(List<BleDevice> scanResultList) {
-
+            override fun onScanning(bleDevice: BleDevice?) {
             }
-        });
 
 	Tips:
 	- The scanning and filtering process is carried out in the worker thread, so it will not affect the UI operation of the main thread. Eventually, every callback result will return to the main thread.。
@@ -59,29 +48,22 @@ Android Bluetooth Low Energy
 - #### Connect with device
 
 
-	`BluetoothGatt connect(BleDevice bleDevice, BleGattCallback bleGattCallback)`
+	`connect(bleDevice: BleDevice?, bleGattCallback: BleGattCallback?)`
 
-        BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
-            @Override
-            public void onStartConnect() {
-
+        instance.connect(bleDevice,object : BleGattCallback(){
+            override fun onStartConnect() {
             }
 
-            @Override
-            public void onConnectFail(BleDevice bleDevice, BleException exception) {
-
+            override fun onConnectFail(bleDevice: BleDevice?, exception: BleException?) {
             }
 
-            @Override
-            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-
+            override fun onConnectSuccess(bleDevice: BleDevice?, gatt: BluetoothGatt?, status: Int) {
             }
 
-            @Override
-            public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-
+            override fun onDisConnected(isActiveDisConnected: Boolean, device: BleDevice?, gatt: BluetoothGatt?, status: Int) {
             }
-        });
+
+        })
 
 	Tips:
 	- On some types of phones, connectGatt must be effective on the main thread. It is very recommended that the connection process be placed in the main thread.
@@ -92,29 +74,26 @@ Android Bluetooth Low Energy
 
 - #### Connect with Mac
 
-	`BluetoothGatt connect(String mac, BleGattCallback bleGattCallback)`
+	`connect(mac: String?, bleGattCallback: BleGattCallback?)`
 
-        BleManager.getInstance().connect(mac, new BleGattCallback() {
-            @Override
-            public void onStartConnect() {
-
+        instance.connect(bleDevice,object : BleGattCallback(){
+            override fun onStartConnect() {
+			
             }
 
-            @Override
-            public void onConnectFail(BleDevice bleDevice, BleException exception) {
-
+            override fun onConnectFail(bleDevice: BleDevice?, exception: BleException?) {
+			
             }
 
-            @Override
-            public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-
+            override fun onConnectSuccess(bleDevice: BleDevice?, gatt: BluetoothGatt?, status: Int) {
+			
             }
 
-            @Override
-            public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-
+            override fun onDisConnected(isActiveDisConnected: Boolean, device: BleDevice?, gatt: BluetoothGatt?, status: Int) {
+			
             }
-        });
+
+        })
 
 	Tips:
 	- This method can attempt to connect directly to the BLE device around the Mac without scanning.
@@ -125,9 +104,9 @@ Android Bluetooth Low Energy
 
 - #### Cancel scan
 
-	`void cancelScan()`
+	`cancelScan()`
 
-		BleManager.getInstance().cancelScan();
+		instance.cancelScan();
 
 	Tips:
 	- If this method is called, if it is still in the scan state, it will end immediately, and callback the `onScanFinished` method.
@@ -136,70 +115,66 @@ Android Bluetooth Low Energy
 
 - #### Write
 
-	`void write(BleDevice bleDevice, byte[] data, BleWriteCallback callback)`
+	`write(bleDevice: BleDevice?, data: ByteArray?, callback: BleWriteCallback?)`
 	
-		void write(BleDevice bleDevice, byte[] data, BleWriteCallback callback){
-			@Override
-			public void onWriteSuccess(int current, int total, byte[] justWrite) {
+		instance.write(bleDevice,data,object : BleWriteCallback(){
+            override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+			
+            }
 
-			}
+            override fun onWriteFailure(exception: BleException?) {
+			
+            }
 
-			@Override
-			public void onWriteFailure(BleException exception) {
-
-			}
-		});
+        })
 
 	
 - #### Read
 
-	`void read(BleDevice bleDevice, BleReadCallback callback)`
+	`read(bleDevice: BleDevice?, callback: BleReadCallback?)`
 	
-		void read(BleDevice bleDevice, BleReadCallback callback){
-            @Override
-            public void onReadSuccess(HashMap data) {
-
+		instance.read(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
             }
 
-            @Override
-            public void onReadFailure(BleException exception) {
-
+            override fun onReadFailure(exception: BleException?) {
+			
             }
-        });
+
+        })
 				
 				
 - #### Command: Read current communication protocol version	
 
-	`BleManager.getInstance().readProtocolVersion(bleDevice, new BleReadCallback())`
+	`readProtocolVersion(bleDevice: BleDevice?, callback: BleReadCallback?)`
 	
-		BleManager.getInstance().readProtocolVersion(bleDevice, new BleReadCallback() {
-            @Override
-            public void onReadSuccess(HashMap data) {
-                       
+		instance.readProtocolVersion(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
             }
 
-            @Override
-            public void onReadFailure(BleException exception) {
-
+            override fun onReadFailure(exception: BleException?) {
+			
             }
-        }));
+
+        })
 				
 
 - #### Command: Set charging mode / charging current
 
-	`BleManager.getInstance().setChargingMode(bleDevice, current, new BleReadCallback())`
+	`setChargingMode(bleDevice: BleDevice?, current: Int, callback: BleReadCallback?)`
 
-		BleManager.getInstance().setChargingMode(bleDevice, current, new BleReadCallback() {
-            @Override
-            public void onReadSuccess(HashMap data) {
-                        
+		instance.setChargingMode(bleDevice, current, object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
             }
 
-            @Override
-            public void onReadFailure(BleException exception) {
-
+            override fun onReadFailure(exception: BleException?) {
+			
             }
-        }));
+
+        })
 			
 	Tips：
 	- current: specifies the charging current in percent [%], one digit is 1[%]. 
@@ -207,67 +182,63 @@ Android Bluetooth Low Energy
 
 - #### Command: Read the current charging mode / charging current
 
-	`BleManager.getInstance().readChargingMode(bleDevice, new BleReadCallback())`
+	`readChargingMode(bleDevice: BleDevice?, callback: BleReadCallback?)`
 
-		BleManager.getInstance().readChargingMode(bleDevice, new BleReadCallback() {
-            @Override
-            public void onReadSuccess(HashMap data) {
-                 
+		instance.readChargingMode(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
             }
 
-            @Override
-            public void onReadFailure(BleException exception) {
-
+            override fun onReadFailure(exception: BleException?) {
+			
             }
-        }));
+
+        })
 
 - #### Command: Read the size of the battery log memory	
 
-	`BleManager.getInstance().readBatteryLogMemory(bleDevice, new BleReadCallback())`
+	`readBatteryLogMemory(bleDevice: BleDevice?, callback: BleReadCallback?)`
 
-		BleManager.getInstance().readBatteryLogMemory(bleDevice, new BleReadCallback() {
-            @Override
-            public void onReadSuccess(HashMap data) {
-                        
+		instance.readBatteryLogMemory(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
             }
 
-            @Override
-            public void onReadFailure(BleException exception) {
-
+            override fun onReadFailure(exception: BleException?) {
+			
             }
-        }));
+
+        })
 
 - #### Command: Read the number of battery data sets stored in the Flash/EEP memory	
 
-	`BleManager.getInstance().readBatteryDataStored(bleDevice, new BleReadCallback())`
+	`readBatteryDataStored(bleDevice: BleDevice?, callback: BleReadCallback?)`
 	
-		BleManager.getInstance().readBatteryDataStored(bleDevice, new BleReadCallback() {
-            @Override
-            public void onReadSuccess(HashMap data) {
-                        
+		instance.readBatteryDataStored(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
             }
 
-            @Override
-            public void onReadFailure(BleException exception) {
-
+            override fun onReadFailure(exception: BleException?) {
+			
             }
-        }));
+
+        })
 
 - #### Command: Read the battery data sets number (MSB, LSB):
 
-	`BleManager.getInstance().readBatteryDataSetsNumber(bleDevice, msb, lsb, new BleReadCallback())`
+	`readBatteryDataSetsNumber(bleDevice: BleDevice?, msb: Int, lsb: Int, callback: BleReadCallback?)`
 
-		BleManager.getInstance().readBatteryDataSetsNumber(bleDevice, msb, lsb, new BleReadCallback() {
-            @Override
-            public void onReadSuccess(HashMap data) {
-                        
-			}
+		instance.readBatteryDataSetsNumber(bleDevice, msb, lsn, object : BleReadCallback() {
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
 
-			@Override
-			public void onReadFailure(BleException exception) {
-
-			}
-		}));
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
+			
+		})
 				
 	Tips：
 	- (MSB, LSB) represents the maximum number of battery log data entries / sets, which can be stored in the EEP/Flash memory (= EEP/Flash memory size).
@@ -275,55 +246,49 @@ Android Bluetooth Low Energy
 
 - #### Command: Read the current battery data
 
-	`BleManager.getInstance().readCurrentBatteryLogData(bleDevice, new BleReadCallback())`
+	`readCurrentBatteryLogData(bleDevice: BleDevice?, callback: BleReadCallback?)`
 	
-		BleManager.getInstance().readCurrentBatteryLogData(bleDevice, new BleReadCallback() {
-			@Override
-			public void onReadSuccess(HashMap data) {
-                        
-			}
+		instance.readCurrentBatteryLogData(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
 
-			@Override
-			public void onReadFailure(BleException exception) {
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
 
-			}
-		}));
+        })
 
 - #### Command: Read the charger log data
 
-	`BleManager.getInstance().readChargerLogData(bleDevice, new BleReadCallback())`
+	`readChargerLogData(bleDevice: BleDevice?, callback: BleReadCallback?)`
 
-		BleManager.getInstance().readChargerLogData(bleDevice, new BleReadCallback() {
-			@Override
-			public void onReadSuccess(HashMap data) {
-                        
-			}
+		instance.readChargerLogData(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
 
-			@Override
-			public void onReadFailure(BleException exception) {
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
 
-			}
-		}));
+        })
 
 
 - #### Get Rssi
 
-	`void readRssi(BleDevice bleDevice, BleRssiCallback callback)`
+	`readRssi(bleDevice: BleDevice?, callback: BleReadCallback?)`
 
-        BleManager.getInstance().readRssi(
-                bleDevice,
-                new BleRssiCallback() {
+        instance.readRssi(bleDevice, object : BleRssiCallback(){
+            override fun onRssiFailure(exception: BleException?) {
+			
+            }
 
-                    @Override
-                    public void onRssiFailure(BleException exception) {
+            override fun onRssiSuccess(rssi: Int) {
+			
+            }
 
-                    }
-
-                    @Override
-                    public void onRssiSuccess(int rssi) {
-
-                    }
-                });
+        })
 
 	Tips：
 	- Obtaining the signal strength of the device must be carried out after the device is connected.
@@ -331,21 +296,16 @@ Android Bluetooth Low Energy
 
 - #### set Mtu
 
-	`void setMtu(BleDevice bleDevice,
-                       int mtu,
-                       BleMtuChangedCallback callback)`
+	`setMtu(bleDevice: BleDevice?, mtu: Int, callback: BleMtuChangedCallback?)`
 
-        BleManager.getInstance().setMtu(bleDevice, mtu, new BleMtuChangedCallback() {
-            @Override
-            public void onSetMTUFailure(BleException exception) {
-
+        instance.setMtu(bleDevice, mtu, object : BleMtuChangedCallback() {
+            override fun onSetMTUFailure(exception: BleException?) {
+			
             }
-
-            @Override
-            public void onMtuChanged(int mtu) {
-
+            override fun onMtuChanged(mtu: Int) {
+			
             }
-        });
+        })
 
 	Tips：
 	- Setting up MTU requires operation after the device is connected.
@@ -355,92 +315,90 @@ Android Bluetooth Low Energy
 
 - #### requestConnectionPriority
 
-	`boolean requestConnectionPriority(BleDevice bleDevice,int connectionPriority)`
+	`requestConnectionPriority(BleDevice bleDevice,int connectionPriority) : Boolean`
 
 	Tips:
 	- Request a specific connection priority. Must be one of{@link BluetoothGatt#CONNECTION_PRIORITY_BALANCED}, {@link BluetoothGatt#CONNECTION_PRIORITY_HIGH} or {@link BluetoothGatt#CONNECTION_PRIORITY_LOW_POWER}.
 
 - #### Converte BleDevice object
 
-	`BleDevice convertBleDevice(BluetoothDevice bluetoothDevice)`
+	`convertBleDevice(bluetoothDevice: BluetoothDevice?): BleDevice`
 
-	`BleDevice convertBleDevice(ScanResult scanResult)`
+	`convertBleDevice(scanResult: ScanResult?): BleDevice`
 
 	Tips：
 	- The completed BleDevice object is still unconnected, if necessary, advanced connection.
 
 - #### Get all connected devices
 
-	`List<BleDevice> getAllConnectedDevice()`
+	`allConnectedDevice: List<BleDevice?>?`
 
-        BleManager.getInstance().getAllConnectedDevice();
+        instance.allConnectedDevice
 
 - #### Get a BluetoothGatt of a connected device
 
-	`BluetoothGatt getBluetoothGatt(BleDevice bleDevice)`
+	`getBluetoothGatt(bleDevice: BleDevice?): BluetoothGatt?`
 
 - #### Get all Service of a connected device
 
-	`List<BluetoothGattService> getBluetoothGattServices(BleDevice bleDevice)`
+	`getBluetoothGattServices(bleDevice: BleDevice?): List<BluetoothGattService>? `
 
 - #### Get all the Characteristic of a Service
 
-	`List<BluetoothGattCharacteristic> getBluetoothGattCharacteristics(BluetoothGattService service)`
+	`getBluetoothGattCharacteristics(service: BluetoothGattService): List<BluetoothGattCharacteristic>`
 		
 - #### Determine whether a device has been connected
 
-	`boolean isConnected(BleDevice bleDevice)`
+	`isConnected(bleDevice: BleDevice?) : Boolean`
 
-        BleManager.getInstance().isConnected(bleDevice);
+        instance.isConnected(bleDevice)
 
-	`boolean isConnected(String mac)`
-
-		BleManager.getInstance().isConnected(mac);
+	`isConnected(mac: String) : Boolean `
+ 
+		instance.isConnected(mac)
 
 - #### Determine the current connection state of a device
 
-	`int getConnectState(BleDevice bleDevice)`
+	`getConnectState(bleDevice: BleDevice?) : Int`
 
-		BleManager.getInstance().getConnectState(bleDevice);
+		instance.getConnectState(bleDevice)
 
 - #### Disconnect a device
 
-	`void disconnect(BleDevice bleDevice)`
+	`disconnect(bleDevice: BleDevice?)`
 
-        BleManager.getInstance().disconnect(bleDevice);
+        instance.disconnect(bleDevice)
 
 - #### Disconnect all devices
 
-	`void disconnectAllDevice()`
+	`disconnectAllDevice()`
 
-        BleManager.getInstance().disconnectAllDevice();
+        instance.disconnectAllDevice()
 
 - #### Out of use, clean up resources
 
-	`void destroy()`
+	`destroy()`
 
-        BleManager.getInstance().destroy();
+        instance.destroy()
 
 
 - #### HexUtil
 
     Data operation tool class
 
-    `String formatHexString(byte[] data, boolean addSpace)`
+    `formatHexString(data: ByteArray?, addSpace: Boolean = false): String?`
 
-	`byte[] hexStringToBytes(String hexString)`
-
-	`char[] encodeHex(byte[] data, boolean toLowerCase)`
+	`encodeHex(data: ByteArray?, toDigits: CharArray): CharArray?`
 
 
 - #### BleDevice
 
     BLE device object is the smallest unit object of scanning, connection and operation in this framework.
 
-    `String getName()` Bluetooth broadcast name
+    `name: String?` Bluetooth broadcast name
 
-    `String getMac()` Bluetooth MAC
+    `mac: String?` Bluetooth MAC
 
-    `byte[] getScanRecord()` Broadcast data
+    `scanRecord: ByteArray?` Broadcast data
 
-    `int getRssi()` Initial signal intensity
+    `rssi: Int` Initial signal intensity
