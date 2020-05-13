@@ -19,7 +19,7 @@ object Parser {
             when (getCommand(data.toUByteArray())) {
                 "0x0010" -> {
                     var i = 5
-                    while (i < data.size - 1) {
+                    while (i < getLastNonZeroIndex(data)) {
                         result.append(data[i].toUByte() and 255u).append(".")
                         i++
                     }
@@ -28,7 +28,7 @@ object Parser {
                 }
                 "0x0040" -> {
                     var i = 6
-                    while (i < data.size - 1) {
+                    while (i < getLastNonZeroIndex(data)) {
                         result.append(data[i].toUByte() and 255u)
                         i++
                     }
@@ -37,7 +37,7 @@ object Parser {
                 }
                 "0x0041" -> {
                     var i = 6
-                    while (i < data.size - 1) {
+                    while (i < getLastNonZeroIndex(data)) {
                         parseResult[Const.currentChargingMode[i - 6]] = (data[i].toUByte() and 255u).toString()
                         i++
                     }
@@ -53,10 +53,19 @@ object Parser {
         return parseResult
     }
 
+    private fun getLastNonZeroIndex(data: ByteArray):Int{
+        var indexNotZero = 0
+        for (k in data.indices)
+            if (data[k].toInt()!=0){
+                indexNotZero = k
+            }
+        return indexNotZero
+    }
+
     @ExperimentalUnsignedTypes
     private fun getValues(data: ByteArray, vararg keys: String): HashMap<*, *> {
         val parseResult = HashMap<String, String>()
-        for ((k, i) in (5 until data.size - 1).withIndex()) {
+        for ((k, i) in (5 until getLastNonZeroIndex(data)).withIndex()) {
             parseResult[keys[k]] = (data[i].toUByte() and 255u).toString()
         }
         return parseResult
