@@ -15,6 +15,7 @@ object Parser {
     fun parseCommand(data: ByteArray): HashMap<*, *> {
         val parseResult = HashMap<String?, String>()
         val result = StringBuilder()
+        logResponse(data)
         if (data[data.size - 1] == getChecksum(data)) {
             when (getCommand(data.toUByteArray())) {
                 "0x0010" -> {
@@ -46,20 +47,30 @@ object Parser {
                 "0x0080" -> return getValues(data, *Const.batteryLogMemory)
                 "0x0082" -> return getValues(data, *Const.batterySetsStored)
                 "0x0084" -> return getValues(data, *Const.keyForSets)
-                "0x0085" -> return getValues(data, *Const.keyForCurrentBatteryData)
+                "0x0086" -> return getValues(data, *Const.keyForCurrentBatteryData)
                 "0x0090" -> return getValues(data, *Const.keyForCurrentChargerData)
             }
+        } else {
+            BleLog.w("CS not OK")
         }
         return parseResult
     }
 
-    private fun getLastNonZeroIndex(data: ByteArray):Int{
+    private fun getLastNonZeroIndex(data: ByteArray): Int {
         var indexNotZero = 0
         for (k in data.indices)
-            if (data[k].toInt()!=0){
+            if (data[k].toInt() != 0) {
                 indexNotZero = k
             }
         return indexNotZero
+    }
+
+    @ExperimentalUnsignedTypes
+    private fun logResponse(data: ByteArray) {
+        val hexResponse = StringBuilder()
+        for (k in data.indices)
+            hexResponse.append((data[k].toUByte() and 255u).toString(16))
+        BleLog.i("response: $hexResponse")
     }
 
     @ExperimentalUnsignedTypes

@@ -192,7 +192,7 @@ class CommandActivity : AppCompatActivity(), Observer {
 
         //read the current battery data
         batteryDataBtn.setOnClickListener {
-            instance.readCurrentBatteryLogData(
+            instance.readCurrentBatteryData(
                     bleDevice, object : BleReadCallback() {
                 override fun onReadSuccess(data: HashMap<*, *>?) {
                     resultCommand.text = ""

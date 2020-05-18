@@ -287,12 +287,14 @@ open class BleManager {
         val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x10, 0x00, 0x00)
         val writeCallback: BleWriteCallback = object : BleWriteCallback() {
             override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                BleLog.i("command: read current communication protocol version - success")
                 if (callback != null) {
                     instance.read(bleDevice, callback)
                 }
             }
 
             override fun onWriteFailure(exception: BleException?) {
+                BleLog.w("command: read current communication protocol version - fail")
                 callback?.onReadFailure(exception)
             }
         }
@@ -314,12 +316,14 @@ open class BleManager {
         if (current in 1..100) {
             val writeCallback: BleWriteCallback = object : BleWriteCallback() {
                 override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                    BleLog.i("command: set charging mode / charging current - success")
                     if (callback != null) {
                         instance.read(bleDevice, callback)
                     }
                 }
 
                 override fun onWriteFailure(exception: BleException?) {
+                    BleLog.w("command: set charging mode / charging current - fail")
                     callback?.onReadFailure(exception)
                 }
             }
@@ -341,12 +345,14 @@ open class BleManager {
         val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x41, 0x00, 0x00)
         val writeCallback: BleWriteCallback = object : BleWriteCallback() {
             override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                BleLog.i("command: read the current charging mode / charging current - success")
                 if (callback != null) {
                     instance.read(bleDevice, callback)
                 }
             }
 
             override fun onWriteFailure(exception: BleException?) {
+                BleLog.w("command: read the current charging mode / charging current - fail")
                 callback?.onReadFailure(exception)
             }
         }
@@ -365,12 +371,14 @@ open class BleManager {
         val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x80.toByte(), 0x00, 0x00)
         val writeCallback: BleWriteCallback = object : BleWriteCallback() {
             override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                BleLog.i("command: read the size of the battery log memory - success")
                 if (callback != null) {
                     instance.read(bleDevice, callback)
                 }
             }
 
             override fun onWriteFailure(exception: BleException?) {
+                BleLog.w("command: read the size of the battery log memory - fail")
                 callback?.onReadFailure(exception)
             }
         }
@@ -389,12 +397,14 @@ open class BleManager {
         val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x82.toByte(), 0x00, 0x00)
         val writeCallback: BleWriteCallback = object : BleWriteCallback() {
             override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                BleLog.i("command: read the number of battery data sets stored in the Flash/EEP memory - success")
                 if (callback != null) {
                     instance.read(bleDevice, callback)
                 }
             }
 
             override fun onWriteFailure(exception: BleException?) {
+                BleLog.w("command: read the number of battery data sets stored in the Flash/EEP memory - fail")
                 callback?.onReadFailure(exception)
             }
         }
@@ -417,12 +427,14 @@ open class BleManager {
         val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x84.toByte(), msb.toByte(), lsb.toByte())
         val writeCallback: BleWriteCallback = object : BleWriteCallback() {
             override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                BleLog.i("command: read the battery data sets number (MSB, LSB) - success")
                 if (callback != null) {
                     instance.read(bleDevice, callback)
                 }
             }
 
             override fun onWriteFailure(exception: BleException?) {
+                BleLog.w("command: read the battery data sets number (MSB, LSB) - fail")
                 callback?.onReadFailure(exception)
             }
         }
@@ -436,17 +448,19 @@ open class BleManager {
      * @param callback
      */
     @ExperimentalUnsignedTypes
-    fun readCurrentBatteryLogData(bleDevice: BleDevice?,
+    fun readCurrentBatteryData(bleDevice: BleDevice?,
                                   callback: BleReadCallback?) {
         val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x86.toByte(), 0x00, 0x00)
         val writeCallback: BleWriteCallback = object : BleWriteCallback() {
             override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                BleLog.i("command: read the current battery data - success")
                 if (callback != null) {
                     instance.read(bleDevice, callback)
                 }
             }
 
             override fun onWriteFailure(exception: BleException?) {
+                BleLog.w("command: read the current battery data - fail")
                 callback?.onReadFailure(exception)
             }
         }
@@ -465,12 +479,14 @@ open class BleManager {
         val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x90.toByte(), 0x00, 0x00)
         val writeCallback: BleWriteCallback = object : BleWriteCallback() {
             override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                BleLog.i("command: read the charger log data - success")
                 if (callback != null) {
                     instance.read(bleDevice, callback)
                 }
             }
 
             override fun onWriteFailure(exception: BleException?) {
+                BleLog.w("command: read the charger log data - fail")
                 callback?.onReadFailure(exception)
             }
         }
