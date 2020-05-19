@@ -49,6 +49,10 @@ object Parser {
                 "0x0084" -> return getValues(data, *Const.keyForSets)
                 "0x0086" -> return getValues(data, *Const.keyForCurrentBatteryData)
                 "0x0090" -> return getValues(data, *Const.keyForCurrentChargerData)
+                "0x000" -> {
+                    parseResult["ERROR"] = "CS error / command not OK"
+                    return parseResult
+                }
             }
         } else {
             BleLog.w("CS not OK")
@@ -66,11 +70,12 @@ object Parser {
     }
 
     @ExperimentalUnsignedTypes
-    private fun logResponse(data: ByteArray) {
+    fun logResponse(data: ByteArray) {
         val hexResponse = StringBuilder()
         for (k in data.indices)
             hexResponse.append((data[k].toUByte() and 255u).toString(16))
         BleLog.i("response: $hexResponse")
+        LogUtils.response=hexResponse.toString()
     }
 
     @ExperimentalUnsignedTypes
@@ -93,9 +98,7 @@ object Parser {
     @ExperimentalUnsignedTypes
     private fun getCommand(data: UByteArray): String {
         var cmd = ""
-        if (data.size >= 8) {
-            cmd = "0x0" + Integer.toHexString(data[3].toInt()) + Integer.toHexString((data[4]).toInt())
-        }
+        cmd = "0x0" + Integer.toHexString(data[3].toInt()) + Integer.toHexString((data[4]).toInt())
         return cmd
     }
 }

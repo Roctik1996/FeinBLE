@@ -82,7 +82,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="20dp"
-        android:text="MSB, LSB"
+        android:text="read the battery data sets number (MSB, LSB)"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -121,6 +121,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:background="@drawable/bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_charger_log_data"
@@ -131,6 +132,7 @@
             <TextView
                 android:id="@+id/txt"
                 android:textSize="12sp"
+                android:padding="5dp"
                 android:textColor="@android:color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

@@ -2,21 +2,22 @@ package com.bbg.feinble
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.bluetooth.BluetoothGatt
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.bbg.feinble.comm.Observer
 import com.bbg.feinble.comm.ObserverManager
 import com.bbg.feinblelib.BleManager.Companion.instance
-import com.bbg.feinblelib.callback.*
+import com.bbg.feinblelib.callback.BleMtuChangedCallback
+import com.bbg.feinblelib.callback.BleReadCallback
 import com.bbg.feinblelib.data.BleDevice
 import com.bbg.feinblelib.exception.BleException
 import com.bbg.feinblelib.utils.BleLog
+import com.bbg.feinblelib.utils.LogUtils
 import java.util.*
+
 
 class CommandActivity : AppCompatActivity(), Observer {
     private var bleDevice: BleDevice? = null
@@ -44,6 +45,7 @@ class CommandActivity : AppCompatActivity(), Observer {
             override fun onSetMTUFailure(exception: BleException?) {
                 BleLog.e(exception.toString())
             }
+
             override fun onMtuChanged(mtu: Int) {
                 println(mtu)
             }
@@ -55,11 +57,17 @@ class CommandActivity : AppCompatActivity(), Observer {
                     bleDevice,
                     object : BleReadCallback() {
                         override fun onReadSuccess(data: HashMap<*, *>?) {
-                            resultCommand.text = ""
+                            println(LogUtils.getCommand())
+                            resultCommand.text = resultCommand.text as String + "read current communication protocol version" +
+                                    "\ncommand: " + LogUtils.getCommand() +
+                                    "\nresponse: " + LogUtils.response +
+                                    "\nparsed response: "
                             val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
                             val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                             for ((key1, value) in mappings) resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
+                            resultCommand.text = resultCommand.text as String + "\n___________________________\n"
                         }
+
 
                         override fun onReadFailure(exception: BleException?) {
                             BleLog.e(exception.toString())
@@ -82,25 +90,32 @@ class CommandActivity : AppCompatActivity(), Observer {
             alertDialog.setView(input)
             alertDialog.setPositiveButton("Set"
             ) { dialog: DialogInterface?, which: Int ->
-                if (input.text.toString().toInt() in 1..100) {
-                    instance.setChargingMode(
-                            bleDevice,
-                            Integer.valueOf(input.text.toString()),
-                            object : BleReadCallback() {
-                                override fun onReadSuccess(data: HashMap<*, *>?) {
-                                    resultCommand.text = ""
-                                    val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
-                                    val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
-                                    for ((key1, value) in mappings) {
-                                        resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
+                if (input.text.isNotEmpty()) {
+                    if (input.text.toString().toInt() in 1..100) {
+                        instance.setChargingMode(
+                                bleDevice,
+                                Integer.valueOf(input.text.toString()),
+                                object : BleReadCallback() {
+                                    override fun onReadSuccess(data: HashMap<*, *>?) {
+                                        resultCommand.text = resultCommand.text as String + "set charging mode / charging current" +
+                                                "\ncommand: " + LogUtils.getCommand() +
+                                                "\nresponse: " + LogUtils.response +
+                                                "\nparsed response: "
+                                        val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                                        val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
+                                        for ((key1, value) in mappings) {
+                                            resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
+                                        }
+                                        resultCommand.text = resultCommand.text as String + "\n___________________________\n"
                                     }
-                                }
 
-                                override fun onReadFailure(exception: BleException?) {
-                                    BleLog.e(exception.toString())
-                                }
-                            })
-                } else Toast.makeText(this, "Min. value is 1, highest value is 100", Toast.LENGTH_LONG).show()
+                                    override fun onReadFailure(exception: BleException?) {
+                                        BleLog.e(exception.toString())
+                                    }
+                                })
+                    } else Toast.makeText(this, "Min. value is 1, highest value is 100", Toast.LENGTH_LONG).show()
+                } else
+                    Toast.makeText(this, "field is empty", Toast.LENGTH_LONG).show()
             }
             alertDialog.setNegativeButton("Cancel"
             ) { dialog: DialogInterface, which: Int -> dialog.dismiss() }
@@ -114,12 +129,16 @@ class CommandActivity : AppCompatActivity(), Observer {
                     bleDevice,
                     object : BleReadCallback() {
                         override fun onReadSuccess(data: HashMap<*, *>?) {
-                            resultCommand.text = ""
+                            resultCommand.text = resultCommand.text as String + "read the current charging mode / charging current" +
+                                    "\ncommand: " + LogUtils.getCommand() +
+                                    "\nresponse: " + LogUtils.response +
+                                    "\nparsed response: "
                             val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
                             val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                             for ((key1, value) in mappings) {
                                 resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
                             }
+                            resultCommand.text = resultCommand.text as String + "\n___________________________\n"
                         }
 
                         override fun onReadFailure(exception: BleException?) {
@@ -133,12 +152,16 @@ class CommandActivity : AppCompatActivity(), Observer {
             instance.readBatteryLogMemory(
                     bleDevice, object : BleReadCallback() {
                 override fun onReadSuccess(data: HashMap<*, *>?) {
-                    resultCommand.text = ""
+                    resultCommand.text = resultCommand.text as String + "read the size of the battery log memory" +
+                            "\ncommand: " + LogUtils.getCommand() +
+                            "\nresponse: " + LogUtils.response +
+                            "\nparsed response: "
                     val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
                     val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                     for ((key1, value) in mappings) {
                         resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
                     }
+                    resultCommand.text = resultCommand.text as String + "\n___________________________\n"
                 }
 
                 override fun onReadFailure(exception: BleException?) {
@@ -153,12 +176,16 @@ class CommandActivity : AppCompatActivity(), Observer {
                     bleDevice,
                     object : BleReadCallback() {
                         override fun onReadSuccess(data: HashMap<*, *>?) {
-                            resultCommand.text = ""
+                            resultCommand.text = resultCommand.text as String + "read the number of battery data sets stored in the Flash/EEP memory" +
+                                    "\ncommand: " + LogUtils.getCommand() +
+                                    "\nresponse: " + LogUtils.response +
+                                    "\nparsed response: "
                             val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
                             val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                             for ((key1, value) in mappings) {
                                 resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
                             }
+                            resultCommand.text = resultCommand.text as String + "\n___________________________\n"
                         }
 
                         override fun onReadFailure(exception: BleException?) {
@@ -170,24 +197,56 @@ class CommandActivity : AppCompatActivity(), Observer {
 
         //read the battery data sets number (MSB, LSB)
         setsBtn.setOnClickListener {
-            instance.readBatteryDataSetsNumber(
-                    bleDevice,
-                    0,
-                    0,
-                    object : BleReadCallback() {
-                        override fun onReadSuccess(data: HashMap<*, *>?) {
-                            resultCommand.text = ""
-                            val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
-                            val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
-                            for ((key1, value) in mappings) {
-                                resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
-                            }
-                        }
+            val alertDialog = AlertDialog.Builder(this)
+            alertDialog.setTitle("read the battery data sets number")
+            val msb = EditText(this)
+            val lsb = EditText(this)
+            val linearLayout = LinearLayout(alertDialog.context)
+            linearLayout.orientation = LinearLayout.VERTICAL
 
-                        override fun onReadFailure(exception: BleException?) {
-                            BleLog.e(exception.toString())
-                        }
-                    })
+            msb.inputType = InputType.TYPE_CLASS_NUMBER
+            msb.hint="MSB"
+            linearLayout.addView(msb)
+            lsb.inputType = InputType.TYPE_CLASS_NUMBER
+            lsb.hint="LSB"
+            linearLayout.addView(lsb)
+
+            alertDialog.setView(linearLayout)
+
+            alertDialog.setPositiveButton("Set"
+            ) { dialog: DialogInterface?, which: Int ->
+                if (msb.text.isNotEmpty() || lsb.text.isNotEmpty()) {
+                    if (msb.text.toString().toInt() in 1..255 || lsb.text.toString().toInt() in 1..255) {
+                        instance.readBatteryDataSetsNumber(
+                                bleDevice,
+                                Integer.parseInt(msb.text.toString()),
+                                Integer.parseInt(lsb.text.toString()),
+                                object : BleReadCallback() {
+                                    override fun onReadSuccess(data: HashMap<*, *>?) {
+                                        resultCommand.text = resultCommand.text as String + "read the battery data sets number (MSB, LSB)" +
+                                                "\ncommand: " + LogUtils.getCommand() +
+                                                "\nresponse: " + LogUtils.response +
+                                                "\nparsed response: "
+                                        val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                                        val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
+                                        for ((key1, value) in mappings) {
+                                            resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
+                                        }
+                                        resultCommand.text = resultCommand.text as String + "\n___________________________\n"
+                                    }
+
+                                    override fun onReadFailure(exception: BleException?) {
+                                        BleLog.e(exception.toString())
+                                    }
+                                })
+                    } else
+                        Toast.makeText(this, "Min. value is 1, highest value is 255", Toast.LENGTH_LONG).show()
+                } else
+                    Toast.makeText(alertDialog.context, "msb or lsb field is empty", Toast.LENGTH_LONG).show()
+            }
+            alertDialog.setNegativeButton("Cancel"
+            ) { dialog: DialogInterface, which: Int -> dialog.dismiss() }
+            alertDialog.show()
         }
 
         //read the current battery data
@@ -195,12 +254,16 @@ class CommandActivity : AppCompatActivity(), Observer {
             instance.readCurrentBatteryData(
                     bleDevice, object : BleReadCallback() {
                 override fun onReadSuccess(data: HashMap<*, *>?) {
-                    resultCommand.text = ""
+                    resultCommand.text = resultCommand.text as String + "read the current battery data" +
+                            "\ncommand: " + LogUtils.getCommand() +
+                            "\nresponse: " + LogUtils.response +
+                            "\nparsed response: "
                     val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
                     val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                     for ((key1, value) in mappings) {
                         resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
                     }
+                    resultCommand.text = resultCommand.text as String + "\n___________________________\n"
                 }
 
                 override fun onReadFailure(exception: BleException?) {
@@ -214,12 +277,16 @@ class CommandActivity : AppCompatActivity(), Observer {
             instance.readChargerLogData(
                     bleDevice, object : BleReadCallback() {
                 override fun onReadSuccess(data: HashMap<*, *>?) {
-                    resultCommand.text = ""
+                    resultCommand.text = resultCommand.text as String + "read the charger log data" +
+                            "\ncommand: " + LogUtils.getCommand() +
+                            "\nresponse: " + LogUtils.response +
+                            "\nparsed response: "
                     val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
                     val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                     for ((key1, value) in mappings) {
                         resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
                     }
+                    resultCommand.text = resultCommand.text as String + "\n___________________________\n"
                 }
 
                 override fun onReadFailure(exception: BleException?) {

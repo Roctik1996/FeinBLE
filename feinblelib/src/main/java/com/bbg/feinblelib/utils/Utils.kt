@@ -13,6 +13,7 @@ object Utils {
         val csData = ByteArray(n + 1)
         if (n >= 0) System.arraycopy(data, 0, csData, 0, n)
         csData[n] = cs
+        LogUtils.command=csData
         return csData
     }
 
