@@ -17,45 +17,56 @@ object Parser {
         val result = StringBuilder()
         logResponse(data)
         if (data[data.size - 1] == getChecksum(data)) {
-            when (getCommand(data.toUByteArray())) {
-                "0x0010" -> {
-                    var i = 5
-                    while (i < getLastNonZeroIndex(data)) {
-                        result.append(data[i].toUByte() and 255u).append(".")
-                        i++
+            if (getCommand(data.toUByteArray()) == getCommand(LogUtils.command.toUByteArray())) {
+                when (getCommand(data.toUByteArray())) {
+                    "0x0010" -> {
+                        var i = 5
+                        while (i < getLastNonZeroIndex(data)) {
+                            result.append(data[i].toUByte() and 255u).append(".")
+                            i++
+                        }
+                        parseResult[Const.protocol] = result.toString()
+                        return parseResult
                     }
-                    parseResult[Const.protocol] = result.toString()
-                    return parseResult
-                }
-                "0x0040" -> {
-                    var i = 6
-                    while (i < getLastNonZeroIndex(data)) {
-                        result.append(data[i].toUByte() and 255u)
-                        i++
+                    "0x0040" -> {
+                        var i = 6
+                        while (i < getLastNonZeroIndex(data)) {
+                            result.append(data[i].toUByte() and 255u)
+                            i++
+                        }
+                        parseResult[Const.chargingMode] = result.toString()
+                        return parseResult
                     }
-                    parseResult[Const.chargingMode] = result.toString()
-                    return parseResult
-                }
-                "0x0041" -> {
-                    var i = 6
-                    while (i < getLastNonZeroIndex(data)) {
-                        parseResult[Const.currentChargingMode[i - 6]] = (data[i].toUByte() and 255u).toString()
-                        i++
+                    "0x0041" -> {
+                        var i = 6
+                        while (i < getLastNonZeroIndex(data)) {
+                            parseResult[Const.currentChargingMode[i - 6]] = (data[i].toUByte() and 255u).toString()
+                            i++
+                        }
+                        return parseResult
                     }
-                    return parseResult
+                    "0x0080" -> return getValues(data, *Const.batteryLogMemory)
+                    "0x0082" -> return getValues(data, *Const.batterySetsStored)
+                    "0x0084" -> return getValues(data, *Const.keyForSets)
+                    "0x0086" -> return getValues(data, *Const.keyForCurrentBatteryData)
+                    "0x0090" -> return getValues(data, *Const.keyForCurrentChargerData)
+                    "0x000" -> {
+                        parseResult["ERROR"] = "CS error / command not OK"
+                        return parseResult
+                    }
+                    else -> {
+                        parseResult["ERROR"] = "command not OK"
+                        return parseResult
+                    }
                 }
-                "0x0080" -> return getValues(data, *Const.batteryLogMemory)
-                "0x0082" -> return getValues(data, *Const.batterySetsStored)
-                "0x0084" -> return getValues(data, *Const.keyForSets)
-                "0x0086" -> return getValues(data, *Const.keyForCurrentBatteryData)
-                "0x0090" -> return getValues(data, *Const.keyForCurrentChargerData)
-                "0x000" -> {
-                    parseResult["ERROR"] = "CS error / command not OK"
-                    return parseResult
-                }
+            } else {
+                parseResult["ERROR"] = "command not OK"
+                return parseResult
             }
         } else {
             BleLog.w("CS not OK")
+            parseResult["ERROR"] = "CS not OK"
+            return parseResult
         }
         return parseResult
     }
@@ -75,7 +86,7 @@ object Parser {
         for (k in data.indices)
             hexResponse.append((data[k].toUByte() and 255u).toString(16))
         BleLog.i("response: $hexResponse")
-        LogUtils.response=hexResponse.toString()
+        LogUtils.response = hexResponse.toString()
     }
 
     @ExperimentalUnsignedTypes
