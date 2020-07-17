@@ -57,12 +57,11 @@ class CommandActivity : AppCompatActivity(), Observer {
                     bleDevice,
                     object : BleReadCallback() {
                         override fun onReadSuccess(data: HashMap<*, *>?) {
-                            println(LogUtils.getCommand())
                             resultCommand.text = resultCommand.text as String + "read current communication protocol version" +
                                     "\ncommand: " + LogUtils.getCommand() +
                                     "\nresponse: " + LogUtils.response +
                                     "\nparsed response: "
-                            val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                            val sorted: TreeMap<Any?, Any?> = TreeMap(data)
                             val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                             for ((key1, value) in mappings) resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
                             resultCommand.text = resultCommand.text as String + "\n___________________________\n"
@@ -101,7 +100,7 @@ class CommandActivity : AppCompatActivity(), Observer {
                                                 "\ncommand: " + LogUtils.getCommand() +
                                                 "\nresponse: " + LogUtils.response +
                                                 "\nparsed response: "
-                                        val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                                        val sorted: TreeMap<Any?, Any?> = TreeMap(data)
                                         val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                                         for ((key1, value) in mappings) {
                                             resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
@@ -133,7 +132,7 @@ class CommandActivity : AppCompatActivity(), Observer {
                                     "\ncommand: " + LogUtils.getCommand() +
                                     "\nresponse: " + LogUtils.response +
                                     "\nparsed response: "
-                            val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                            val sorted: TreeMap<Any?, Any?> = TreeMap(data)
                             val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                             for ((key1, value) in mappings) {
                                 resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
@@ -180,7 +179,7 @@ class CommandActivity : AppCompatActivity(), Observer {
                                     "\ncommand: " + LogUtils.getCommand() +
                                     "\nresponse: " + LogUtils.response +
                                     "\nparsed response: "
-                            val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                            val sorted: TreeMap<Any?, Any?> = TreeMap(data)
                             val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                             for ((key1, value) in mappings) {
                                 resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
@@ -227,7 +226,7 @@ class CommandActivity : AppCompatActivity(), Observer {
                                                 "\ncommand: " + LogUtils.getCommand() +
                                                 "\nresponse: " + LogUtils.response +
                                                 "\nparsed response: "
-                                        val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                                        val sorted: TreeMap<Any?, Any?> = TreeMap(data)
                                         val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                                         for ((key1, value) in mappings) {
                                             resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
@@ -258,7 +257,7 @@ class CommandActivity : AppCompatActivity(), Observer {
                             "\ncommand: " + LogUtils.getCommand() +
                             "\nresponse: " + LogUtils.response +
                             "\nparsed response: "
-                    val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                    val sorted: TreeMap<Any?, Any?> = TreeMap(data)
                     val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                     for ((key1, value) in mappings) {
                         resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
@@ -281,7 +280,7 @@ class CommandActivity : AppCompatActivity(), Observer {
                             "\ncommand: " + LogUtils.getCommand() +
                             "\nresponse: " + LogUtils.response +
                             "\nparsed response: "
-                    val sorted: TreeMap<Any?, Any?> = TreeMap<Any?, Any?>(data)
+                    val sorted: TreeMap<Any?, Any?> = TreeMap(data)
                     val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
                     for ((key1, value) in mappings) {
                         resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value

@@ -70,8 +70,35 @@ internal object Const {
             "ERROR_COUNTER",
             "STATUS",
             "SOC",
-            "FAN_ON_COUNTER"
+            "FAN_ON_COUNTER",
+            "STATUS_CHARGING",
+            "STATUS_HMI",
+            "RESERVED_1",
+            "RESERVED_2"
     )
+
+    val keyForStatusCharging = arrayOf(
+            "BATTERY_PLUGGED",
+            "CC_CHARGE",
+            "CV_CHARGE",
+            "WAITING",
+            "FAN_ON",
+            "TEMP_ERROR_BAT",
+            "TEMP_ERROR_CHARGER",
+            "OTHER_ERROR"
+    )
+
+    val keyForStatusHMI = arrayOf(
+            "CHARGING_LED_LOW",
+            "CHARGING_LED_MID-LOW",
+            "CHARGING_LED_MID-HIGH",
+            "CHARGING_LED_HIGH",
+            "CHARGING_LEDS_BLINKING",
+            "TEMPERATURE_LED",
+            "BLUETOOTH_LED",
+            "ERROR_LED"
+    )
+
     val keyForCurrentChargerData = arrayOf(
             "HARDWARE_VERSION_MSB",
             "HARDWARE_VERSION_LSB",

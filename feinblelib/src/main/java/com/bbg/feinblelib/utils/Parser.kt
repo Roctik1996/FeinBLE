@@ -1,7 +1,10 @@
 package com.bbg.feinblelib.utils
 
-import java.util.*
+import com.bbg.feinblelib.utils.Const.keyForStatusCharging
+import com.bbg.feinblelib.utils.Const.keyForStatusHMI
+import kotlin.experimental.and
 import kotlin.experimental.inv
+
 
 object Parser {
     /**
@@ -48,7 +51,7 @@ object Parser {
                     "0x0080" -> return getValues(data, *Const.batteryLogMemory)
                     "0x0082" -> return getValues(data, *Const.batterySetsStored)
                     "0x0084" -> return getValues(data, *Const.keyForSets)
-                    "0x0086" -> return getValues(data, *Const.keyForCurrentBatteryData)
+                    "0x0086" -> return getBitValues(getValues(data, *Const.keyForCurrentBatteryData))
                     "0x0090" -> return getValues(data, *Const.keyForCurrentChargerData)
                     "0x000" -> {
                         parseResult["ERROR"] = "CS error / command not OK"
@@ -90,11 +93,35 @@ object Parser {
     }
 
     @ExperimentalUnsignedTypes
-    private fun getValues(data: ByteArray, vararg keys: String): HashMap<*, *> {
+    private fun getValues(data: ByteArray, vararg keys: String): HashMap<String, String> {
         val parseResult = HashMap<String, String>()
         for ((k, i) in (5 until getLastNonZeroIndex(data)).withIndex()) {
             parseResult[keys[k]] = (data[i].toUByte() and 255u).toString()
         }
+        return parseResult
+    }
+
+    @ExperimentalUnsignedTypes
+    private fun getBitValues(data: HashMap<String,String>): HashMap<*, *> {
+        val statusChargingData = (data["STATUS_CHARGING"]!!.toUByte())
+        val statusChargerResult = HashMap<String, String>()
+        val chargerStatus = String.format("%8s", Integer.toBinaryString(statusChargingData.toInt() and 0xFF)).replace(' ', '0')
+        val bitStatusChargerArray = chargerStatus.toCharArray()
+        for (i in bitStatusChargerArray.indices)
+            statusChargerResult[keyForStatusCharging[i]] = bitStatusChargerArray[i].toString()
+
+        val statusHMIData = (data["STATUS_HMI"]!!.toUByte())
+        val statusHMIResult = HashMap<String, String>()
+        val HMIStatus = String.format("%8s", Integer.toBinaryString(statusHMIData.toInt() and 0xFF)).replace(' ', '0')
+        val bitStatusHMIArray = HMIStatus.toCharArray()
+        for (i in bitStatusHMIArray.indices)
+            statusHMIResult[keyForStatusHMI[i]] = bitStatusHMIArray[i].toString()
+
+        val parseResult = HashMap<String, String>()
+        parseResult.putAll(data)
+        parseResult.putAll(statusChargerResult)
+        parseResult.putAll(statusHMIResult)
+
         return parseResult
     }
 

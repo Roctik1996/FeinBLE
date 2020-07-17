@@ -7,8 +7,9 @@ object LogUtils {
     @ExperimentalUnsignedTypes
     fun getCommand():String{
         val hexResponse = StringBuilder()
-        for (k in command.indices)
-            hexResponse.append((command[k].toUByte() and 255u).toString(16))
+        for (b in command) {
+            hexResponse.append(String.format("%02X", b))
+        }
         BleLog.i("response: $hexResponse")
         return hexResponse.toString()
     }
