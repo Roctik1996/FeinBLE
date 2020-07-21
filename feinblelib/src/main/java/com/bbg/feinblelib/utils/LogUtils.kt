@@ -10,7 +10,7 @@ object LogUtils {
         for (b in command) {
             hexResponse.append(String.format("%02X", b))
         }
-        BleLog.i("response: $hexResponse")
+        BleLog.i("command: $hexResponse")
         return hexResponse.toString()
     }
 }

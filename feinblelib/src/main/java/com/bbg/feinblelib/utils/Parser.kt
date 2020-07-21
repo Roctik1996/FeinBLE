@@ -86,8 +86,9 @@ object Parser {
     @ExperimentalUnsignedTypes
     fun logResponse(data: ByteArray) {
         val hexResponse = StringBuilder()
+
         for (k in data.indices)
-            hexResponse.append((data[k].toUByte() and 255u).toString(16))
+            hexResponse.append(String.format("%02X", data[k]))
         BleLog.i("response: $hexResponse")
         LogUtils.response = hexResponse.toString()
     }
