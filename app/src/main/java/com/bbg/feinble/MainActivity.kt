@@ -95,6 +95,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     startActivity(intent)
                 }
             }
+
+            override fun onInfo(bleDevice: BleDevice?) {
+                if (instance.isConnected(bleDevice)) {
+                    val intent = Intent(this@MainActivity, InfoActivity::class.java)
+                    intent.putExtra(InfoActivity.KEY_DATA, bleDevice)
+                    startActivity(intent)
+                }
+            }
         })
         val listViewDevice = findViewById<ListView>(R.id.list_device)
         listViewDevice.adapter = mDeviceAdapter

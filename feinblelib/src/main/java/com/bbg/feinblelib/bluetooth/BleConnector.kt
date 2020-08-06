@@ -28,6 +28,7 @@ class BleConnector internal constructor(private val mBleBluetooth: BleBluetooth)
     private var mGattService: BluetoothGattService? = null
     private var mCharacteristic: BluetoothGattCharacteristic? = null
     private val mHandler: Handler
+    private var isDeviceInfo=false
     private fun withUUID(serviceUUID: UUID?, characteristicUUID: UUID?): BleConnector {
         if (serviceUUID != null && mBluetoothGatt != null) {
             mGattService = mBluetoothGatt.getService(serviceUUID)
@@ -73,10 +74,10 @@ class BleConnector internal constructor(private val mBleBluetooth: BleBluetooth)
     /**
      * read
      */
-    fun readCharacteristic(bleReadCallback: BleReadCallback?, uuidRead: String) {
+    fun readCharacteristic(bleReadCallback: BleReadCallback?, uuidRead: String,isDeviceInfo: Boolean) {
         if (mCharacteristic != null
                 && mCharacteristic!!.properties and BluetoothGattCharacteristic.PROPERTY_READ > 0) {
-            handleCharacteristicReadCallback(bleReadCallback, uuidRead)
+            handleCharacteristicReadCallback(bleReadCallback, uuidRead,isDeviceInfo)
             if (!mBluetoothGatt!!.readCharacteristic(mCharacteristic)) {
                 readMsgInit()
                 bleReadCallback?.onReadFailure(OtherException("gatt readCharacteristic fail"))
@@ -148,11 +149,12 @@ class BleConnector internal constructor(private val mBleBluetooth: BleBluetooth)
      * read
      */
     private fun handleCharacteristicReadCallback(bleReadCallback: BleReadCallback?,
-                                                 uuidRead: String) {
+                                                 uuidRead: String,isDeviceInfo: Boolean) {
         if (bleReadCallback != null) {
             readMsgInit()
             bleReadCallback.key = uuidRead
             bleReadCallback.handler = mHandler
+            this.isDeviceInfo = isDeviceInfo
             mBleBluetooth.addReadCallback(uuidRead, bleReadCallback)
             mHandler.sendMessageDelayed(
                     mHandler.obtainMessage(BleMsg.MSG_CHA_READ_START, bleReadCallback),
@@ -236,7 +238,7 @@ class BleConnector internal constructor(private val mBleBluetooth: BleBluetooth)
                         val status = bundle.getInt(BleMsg.KEY_READ_BUNDLE_STATUS)
                         val value = bundle.getByteArray(BleMsg.KEY_READ_BUNDLE_VALUE)
                         if (status == BluetoothGatt.GATT_SUCCESS && value != null) {
-                            readCallback.onReadSuccess(Parser.parseCommand(value))
+                            readCallback.onReadSuccess(Parser.parseCommand(value,isDeviceInfo))
                         } else {
                             readCallback.onReadFailure(GattException(status))
                         }

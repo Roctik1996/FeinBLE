@@ -16,5 +16,6 @@
     <string name="gpsNotifyMsg">Please turn on gps</string>
     <string name="setting">Setting</string>
     <string name="cancel">Cancel</string>
-    <string name="enter">Enter</string>
+    <string name="command">Command</string>
+    <string name="device_info">Device Info</string>
 </resources>

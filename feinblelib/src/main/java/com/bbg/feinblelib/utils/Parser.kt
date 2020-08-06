@@ -2,7 +2,9 @@ package com.bbg.feinblelib.utils
 
 import com.bbg.feinblelib.utils.Const.keyForStatusCharging
 import com.bbg.feinblelib.utils.Const.keyForStatusHMI
-import kotlin.experimental.and
+import java.nio.ByteBuffer
+import java.nio.CharBuffer
+import java.nio.charset.Charset
 import kotlin.experimental.inv
 
 
@@ -15,60 +17,79 @@ object Parser {
      * @return parsed value
      */
     @ExperimentalUnsignedTypes
-    fun parseCommand(data: ByteArray): HashMap<*, *> {
+    fun parseCommand(data: ByteArray, isDeviceInfo: Boolean): HashMap<*, *> {
         val parseResult = HashMap<String?, String>()
         val result = StringBuilder()
         logResponse(data)
-        if (data[data.size - 1] == getChecksum(data)) {
-            if (getCommand(data.toUByteArray()) == getCommand(LogUtils.command.toUByteArray())) {
-                when (getCommand(data.toUByteArray())) {
-                    "0x0010" -> {
-                        var i = 5
-                        while (i < getLastNonZeroIndex(data)) {
-                            result.append(data[i].toUByte() and 255u).append(".")
-                            i++
+
+        if (!isDeviceInfo)
+            if (data[data.size - 1] == getChecksum(data)) {
+                if (getCommand(data.toUByteArray()) == getCommand(LogUtils.command.toUByteArray())) {
+                    when (getCommand(data.toUByteArray())) {
+                        "0x0010" -> {
+                            var i = 5
+                            while (i < getLastNonZeroIndex(data)) {
+                                result.append(data[i].toUByte() and 255u).append(".")
+                                i++
+                            }
+                            parseResult[Const.protocol] = result.toString()
+                            return parseResult
                         }
-                        parseResult[Const.protocol] = result.toString()
-                        return parseResult
-                    }
-                    "0x0040" -> {
-                        var i = 6
-                        while (i < getLastNonZeroIndex(data)) {
-                            result.append(data[i].toUByte() and 255u)
-                            i++
+                        "0x0040" -> {
+                            var i = 6
+                            while (i < getLastNonZeroIndex(data)) {
+                                result.append(data[i].toUByte() and 255u)
+                                i++
+                            }
+                            parseResult[Const.chargingMode] = result.toString()
+                            return parseResult
                         }
-                        parseResult[Const.chargingMode] = result.toString()
-                        return parseResult
-                    }
-                    "0x0041" -> {
-                        var i = 6
-                        while (i < getLastNonZeroIndex(data)) {
-                            parseResult[Const.currentChargingMode[i - 6]] = (data[i].toUByte() and 255u).toString()
-                            i++
+                        "0x0041" -> {
+                            var i = 6
+                            while (i < getLastNonZeroIndex(data)) {
+                                parseResult[Const.currentChargingMode[i - 6]] = (data[i].toUByte() and 255u).toString()
+                                i++
+                            }
+                            return parseResult
                         }
-                        return parseResult
+                        "0x0080" -> return getValues(data, *Const.batteryLogMemory)
+                        "0x0082" -> return getValues(data, *Const.batterySetsStored)
+                        "0x0084" -> return getValues(data, *Const.keyForSets)
+                        "0x0086" -> return getBitValues(getValues(data, *Const.keyForCurrentBatteryData))
+                        "0x0090" -> return getValues(data, *Const.keyForCurrentChargerData)
+                        "0x000" -> {
+                            parseResult["ERROR"] = "CS error / command not OK"
+                            return parseResult
+                        }
+                        else -> {
+                            parseResult["ERROR"] = "command not OK"
+                            return parseResult
+                        }
                     }
-                    "0x0080" -> return getValues(data, *Const.batteryLogMemory)
-                    "0x0082" -> return getValues(data, *Const.batterySetsStored)
-                    "0x0084" -> return getValues(data, *Const.keyForSets)
-                    "0x0086" -> return getBitValues(getValues(data, *Const.keyForCurrentBatteryData))
-                    "0x0090" -> return getValues(data, *Const.keyForCurrentChargerData)
-                    "0x000" -> {
-                        parseResult["ERROR"] = "CS error / command not OK"
-                        return parseResult
-                    }
-                    else -> {
-                        parseResult["ERROR"] = "command not OK"
-                        return parseResult
-                    }
+                } else {
+                    parseResult["ERROR"] = "command not OK"
+                    return parseResult
                 }
             } else {
-                parseResult["ERROR"] = "command not OK"
+                BleLog.w("CS not OK")
+                parseResult["ERROR"] = "CS not OK"
                 return parseResult
             }
-        } else {
-            BleLog.w("CS not OK")
-            parseResult["ERROR"] = "CS not OK"
+        else {
+            val hexResponse = StringBuilder()
+            for (k in data.indices)
+                hexResponse.append(String.format("%02X", data[k]))
+            val buff: ByteBuffer = ByteBuffer.allocate(hexResponse.toString().length / 2)
+
+            var i = 0
+            while (i < hexResponse.toString().length) {
+                buff.put(hexResponse.toString().substring(i, i + 2).toInt(16).toByte())
+                i += 2
+            }
+            buff.rewind()
+            val cs: Charset = Charset.forName("UTF-8")
+            val cb: CharBuffer = cs.decode(buff)
+            parseResult["VALUE"] = cb.toString()
             return parseResult
         }
         return parseResult
@@ -103,7 +124,7 @@ object Parser {
     }
 
     @ExperimentalUnsignedTypes
-    private fun getBitValues(data: HashMap<String,String>): HashMap<*, *> {
+    private fun getBitValues(data: HashMap<String, String>): HashMap<*, *> {
         val statusChargingData = (data["STATUS_CHARGING"]!!.toUByte())
         val statusChargerResult = HashMap<String, String>()
         val chargerStatus = String.format("%8s", Integer.toBinaryString(statusChargingData.toInt() and 0xFF)).replace(' ', '0')

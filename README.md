@@ -273,6 +273,112 @@ Android Bluetooth Low Energy
             }
 
         })
+		
+		
+- #### Read manufacturer name
+
+	`readManufacturerName(bleDevice: BleDevice?, callback: BleReadCallback?)`
+
+		instance.readManufacturerName(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
+
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
+
+        })
+		
+- #### Read model number
+
+	`readModelNumber(bleDevice: BleDevice?, callback: BleReadCallback?)`
+
+		instance.readModelNumber(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
+
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
+
+        })
+		
+- #### Read serial number
+
+	`readSerialNumber(bleDevice: BleDevice?, callback: BleReadCallback?)`
+
+		instance.readSerialNumber(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
+
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
+
+        })
+		
+- #### Read hardware revision
+
+	`readHardwareRevision(bleDevice: BleDevice?, callback: BleReadCallback?)`
+
+		instance.readHardwareRevision(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
+
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
+
+        })
+		
+- #### Read firmware revision
+
+	`readFirmwareRevision(bleDevice: BleDevice?, callback: BleReadCallback?)`
+
+		instance.readFirmwareRevision(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
+
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
+
+        })
+		
+- #### Read software revision
+
+	`readSoftwareRevision(bleDevice: BleDevice?, callback: BleReadCallback?)`
+
+		instance.readSoftwareRevision(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
+
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
+
+        })
+		
+- #### Read system ID
+
+	`readSystemID(bleDevice: BleDevice?, callback: BleReadCallback?)`
+
+		instance.readSystemID(bleDevice,object : BleReadCallback(){
+            override fun onReadSuccess(data: HashMap<*, *>?) {
+			
+            }
+
+            override fun onReadFailure(exception: BleException?) {
+			
+            }
+
+        })
 
 
 - #### Get Rssi

@@ -509,7 +509,159 @@ open class BleManager {
         } else {
             bleBluetooth.newBleConnector()
                     .withUUIDString(serviceUuid, characteristicUuid)
-                    .readCharacteristic(callback, characteristicUuid)
+                    .readCharacteristic(callback, characteristicUuid,false)
+        }
+    }
+
+    open fun uuidFromShortCode(shortCode: String): String {
+        return "0000$shortCode-$baseBluetoothUuidPostfix"
+    }
+
+
+    /**
+     * read manufacturer name
+     *
+     * @param bleDevice
+     * @param callback
+     */
+    @ExperimentalUnsignedTypes
+    fun readManufacturerName(bleDevice: BleDevice?,
+                             callback: BleReadCallback?) {
+        requireNotNull(callback) { "BleReadCallback can not be Null!" }
+        val bleBluetooth = multipleBluetoothController!!.getBleBluetooth(bleDevice)
+        if (bleBluetooth == null) {
+            callback.onReadFailure(OtherException("This device is not connected!"))
+        } else {
+            BleLog.i("read manufacturer name - success")
+            bleBluetooth.newBleConnector()
+                    .withUUIDString(uuidFromShortCode(deviceInformationServiceUuid), uuidFromShortCode("2A29"))
+                    .readCharacteristic(callback, uuidFromShortCode("2A29"),true)
+        }
+    }
+
+    /**
+     * read model number
+     *
+     * @param bleDevice
+     * @param callback
+     */
+    @ExperimentalUnsignedTypes
+    fun readModelNumber(bleDevice: BleDevice?,
+                        callback: BleReadCallback?) {
+        requireNotNull(callback) { "BleReadCallback can not be Null!" }
+        val bleBluetooth = multipleBluetoothController!!.getBleBluetooth(bleDevice)
+        if (bleBluetooth == null) {
+            callback.onReadFailure(OtherException("This device is not connected!"))
+        } else {
+            BleLog.i("read model number - success")
+            bleBluetooth.newBleConnector()
+                    .withUUIDString(uuidFromShortCode(deviceInformationServiceUuid), uuidFromShortCode("2A24"))
+                    .readCharacteristic(callback, uuidFromShortCode("2A24"),true)
+        }
+    }
+
+    /**
+     * read serial number
+     *
+     * @param bleDevice
+     * @param callback
+     */
+    @ExperimentalUnsignedTypes
+    fun readSerialNumber(bleDevice: BleDevice?,
+                         callback: BleReadCallback?) {
+        requireNotNull(callback) { "BleReadCallback can not be Null!" }
+        val bleBluetooth = multipleBluetoothController!!.getBleBluetooth(bleDevice)
+        if (bleBluetooth == null) {
+            callback.onReadFailure(OtherException("This device is not connected!"))
+        } else {
+            BleLog.i("read serial number - success")
+            bleBluetooth.newBleConnector()
+                    .withUUIDString(uuidFromShortCode(deviceInformationServiceUuid), uuidFromShortCode("2A25"))
+                    .readCharacteristic(callback, uuidFromShortCode("2A25"),true)
+        }
+    }
+
+    /**
+     * read hardware revision
+     *
+     * @param bleDevice
+     * @param callback
+     */
+    @ExperimentalUnsignedTypes
+    fun readHardwareRevision(bleDevice: BleDevice?,
+                             callback: BleReadCallback?) {
+        requireNotNull(callback) { "BleReadCallback can not be Null!" }
+        val bleBluetooth = multipleBluetoothController!!.getBleBluetooth(bleDevice)
+        if (bleBluetooth == null) {
+            callback.onReadFailure(OtherException("This device is not connected!"))
+        } else {
+            BleLog.i("read hardware revision - success")
+            bleBluetooth.newBleConnector()
+                    .withUUIDString(uuidFromShortCode(deviceInformationServiceUuid), uuidFromShortCode("2A27"))
+                    .readCharacteristic(callback, uuidFromShortCode("2A27"),true)
+        }
+    }
+
+    /**
+     * read firmware revision
+     *
+     * @param bleDevice
+     * @param callback
+     */
+    @ExperimentalUnsignedTypes
+    fun readFirmwareRevision(bleDevice: BleDevice?,
+                             callback: BleReadCallback?) {
+        requireNotNull(callback) { "BleReadCallback can not be Null!" }
+        val bleBluetooth = multipleBluetoothController!!.getBleBluetooth(bleDevice)
+        if (bleBluetooth == null) {
+            callback.onReadFailure(OtherException("This device is not connected!"))
+        } else {
+            BleLog.i("read firmware revision - success")
+            bleBluetooth.newBleConnector()
+                    .withUUIDString(uuidFromShortCode(deviceInformationServiceUuid), uuidFromShortCode("2A26"))
+                    .readCharacteristic(callback, uuidFromShortCode("2A26"),true)
+        }
+    }
+
+    /**
+     * read software revision
+     *
+     * @param bleDevice
+     * @param callback
+     */
+    @ExperimentalUnsignedTypes
+    fun readSoftwareRevision(bleDevice: BleDevice?,
+                             callback: BleReadCallback?) {
+        requireNotNull(callback) { "BleReadCallback can not be Null!" }
+        val bleBluetooth = multipleBluetoothController!!.getBleBluetooth(bleDevice)
+        if (bleBluetooth == null) {
+            callback.onReadFailure(OtherException("This device is not connected!"))
+        } else {
+            BleLog.i("read software revision - success")
+            bleBluetooth.newBleConnector()
+                    .withUUIDString(uuidFromShortCode(deviceInformationServiceUuid), uuidFromShortCode("2A28"))
+                    .readCharacteristic(callback, uuidFromShortCode("2A28"),true)
+        }
+    }
+
+    /**
+     * read system ID
+     *
+     * @param bleDevice
+     * @param callback
+     */
+    @ExperimentalUnsignedTypes
+    fun readSystemID(bleDevice: BleDevice?,
+                             callback: BleReadCallback?) {
+        requireNotNull(callback) { "BleReadCallback can not be Null!" }
+        val bleBluetooth = multipleBluetoothController!!.getBleBluetooth(bleDevice)
+        if (bleBluetooth == null) {
+            callback.onReadFailure(OtherException("This device is not connected!"))
+        } else {
+            BleLog.i("read system ID - success")
+            bleBluetooth.newBleConnector()
+                    .withUUIDString(uuidFromShortCode(deviceInformationServiceUuid), uuidFromShortCode("2A23"))
+                    .readCharacteristic(callback, uuidFromShortCode("2A23"),true)
         }
     }
 
@@ -748,7 +900,9 @@ open class BleManager {
         private const val Destination_ID: Byte = 0x43
         private val serviceUuids = arrayOf(UUID.fromString("fc53a934-835b-0001-0000-7f438fd97a02"))
         private const val serviceUuid = "fc53a934-835b-0001-0000-7f438fd97a02"
+        private const val deviceInformationServiceUuid = "180A"
         private const val characteristicUuid = "fc53a934-835b-0001-0001-7f438fd97a02"
+        private const val baseBluetoothUuidPostfix = "0000-1000-8000-00805F9B34FB"
 
         @kotlin.jvm.JvmStatic
         val instance: BleManager

@@ -78,7 +78,8 @@ class DeviceAdapter(private val context: Context) : BaseAdapter() {
             holder.layoutConnected = convertView.findViewById(R.id.layout_connected)
             holder.btnDisconnect = convertView.findViewById(R.id.btn_disconnect)
             holder.btnConnect = convertView.findViewById(R.id.btn_connect)
-            holder.btnDetail = convertView.findViewById(R.id.btn_detail)
+            holder.btnCommand = convertView.findViewById(R.id.btn_detail)
+            holder.btnInfo = convertView.findViewById(R.id.btn_info)
         }
         val bleDevice = getItem(position)
         val isConnected = instance.isConnected(bleDevice)
@@ -111,9 +112,14 @@ class DeviceAdapter(private val context: Context) : BaseAdapter() {
                 mListener!!.onDisConnect(bleDevice)
             }
         }
-        holder.btnDetail!!.setOnClickListener {
+        holder.btnCommand!!.setOnClickListener {
             if (mListener != null) {
                 mListener!!.onDetail(bleDevice)
+            }
+        }
+        holder.btnInfo!!.setOnClickListener {
+            if (mListener != null) {
+                mListener!!.onInfo(bleDevice)
             }
         }
         return convertView!!
@@ -128,13 +134,15 @@ class DeviceAdapter(private val context: Context) : BaseAdapter() {
         var layoutConnected: LinearLayout? = null
         var btnDisconnect: Button? = null
         var btnConnect: Button? = null
-        var btnDetail: Button? = null
+        var btnCommand: Button? = null
+        var btnInfo: Button? = null
     }
 
     interface OnDeviceClickListener {
         fun onConnect(bleDevice: BleDevice?)
         fun onDisConnect(bleDevice: BleDevice?)
         fun onDetail(bleDevice: BleDevice?)
+        fun onInfo(bleDevice: BleDevice?)
     }
 
     private var mListener: OnDeviceClickListener? = null
