@@ -199,27 +199,21 @@ class CommandActivity : AppCompatActivity(), Observer {
             val alertDialog = AlertDialog.Builder(this)
             alertDialog.setTitle("read the battery data sets number")
             val msb = EditText(this)
-            val lsb = EditText(this)
             val linearLayout = LinearLayout(alertDialog.context)
             linearLayout.orientation = LinearLayout.VERTICAL
 
             msb.inputType = InputType.TYPE_CLASS_NUMBER
-            msb.hint="MSB"
             linearLayout.addView(msb)
-            lsb.inputType = InputType.TYPE_CLASS_NUMBER
-            lsb.hint="LSB"
-            linearLayout.addView(lsb)
 
             alertDialog.setView(linearLayout)
 
             alertDialog.setPositiveButton("Set"
             ) { dialog: DialogInterface?, which: Int ->
-                if (msb.text.isNotEmpty() || lsb.text.isNotEmpty()) {
-                    if (msb.text.toString().toInt() in 1..255 || lsb.text.toString().toInt() in 1..255) {
+                if (msb.text.isNotEmpty()) {
+                    if (msb.text.toString().toInt() in 1..65535) {
                         instance.readBatteryDataSetsNumber(
                                 bleDevice,
                                 Integer.parseInt(msb.text.toString()),
-                                Integer.parseInt(lsb.text.toString()),
                                 object : BleReadCallback() {
                                     override fun onReadSuccess(data: HashMap<*, *>?) {
                                         resultCommand.text = resultCommand.text as String + "read the battery data sets number (MSB, LSB)" +
@@ -239,9 +233,9 @@ class CommandActivity : AppCompatActivity(), Observer {
                                     }
                                 })
                     } else
-                        Toast.makeText(this, "Min. value is 1, highest value is 255", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Min. value is 0, highest value is 65535", Toast.LENGTH_LONG).show()
                 } else
-                    Toast.makeText(alertDialog.context, "msb or lsb field is empty", Toast.LENGTH_LONG).show()
+                    Toast.makeText(alertDialog.context, "field is empty", Toast.LENGTH_LONG).show()
             }
             alertDialog.setNegativeButton("Cancel"
             ) { dialog: DialogInterface, which: Int -> dialog.dismiss() }

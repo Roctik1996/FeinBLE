@@ -227,9 +227,9 @@ Android Bluetooth Low Energy
 
 - #### Command: Read the battery data sets number (MSB, LSB):
 
-	`readBatteryDataSetsNumber(bleDevice: BleDevice?, msb: Int, lsb: Int, callback: BleReadCallback?)`
+	`readBatteryDataSetsNumber(bleDevice: BleDevice?, msb_lsb: Int, callback: BleReadCallback?)`
 
-		instance.readBatteryDataSetsNumber(bleDevice, msb, lsn, object : BleReadCallback() {
+		instance.readBatteryDataSetsNumber(bleDevice, msb_lsb, object : BleReadCallback() {
             override fun onReadSuccess(data: HashMap<*, *>?) {
 			
             }

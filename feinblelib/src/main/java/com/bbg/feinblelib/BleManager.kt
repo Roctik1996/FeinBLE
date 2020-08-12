@@ -18,6 +18,8 @@ import com.bbg.feinblelib.exception.OtherException
 import com.bbg.feinblelib.scan.BleScanner
 import com.bbg.feinblelib.utils.BleLog
 import com.bbg.feinblelib.utils.Utils
+import com.bbg.feinblelib.utils.Utils.convertBinaryToDecimal
+import com.bbg.feinblelib.utils.Utils.intToBinary
 import java.util.*
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -415,15 +417,15 @@ open class BleManager {
      * read the battery data sets number (MSB, LSB)
      *
      * @param bleDevice
-     * @param msb
-     * @param lsb
+     * @param msb_lsb
      * @param callback
      */
     @ExperimentalUnsignedTypes
     fun readBatteryDataSetsNumber(bleDevice: BleDevice?,
-                                  msb: Int,
-                                  lsb: Int,
+                                  msb_lsb: Int,
                                   callback: BleReadCallback?) {
+        val msb = convertBinaryToDecimal((intToBinary(msb_lsb).substring(0,4)))
+        val lsb = convertBinaryToDecimal((intToBinary(msb_lsb).substring(4,8)))
         val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x84.toByte(), msb.toByte(), lsb.toByte())
         val writeCallback: BleWriteCallback = object : BleWriteCallback() {
             override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {

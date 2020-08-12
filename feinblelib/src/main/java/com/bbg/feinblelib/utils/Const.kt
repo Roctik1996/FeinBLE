@@ -10,17 +10,19 @@ internal object Const {
     )
     val batteryLogMemory = arrayOf(
             "MSB",
-            "LSB"
+            "LSB",
+            "BATTERY_LOG_MEMORY"
     )
     val batterySetsStored = arrayOf(
             "MSB",
-            "LSB"
+            "LSB",
+            "BATTERY_SETS_STORED"
     )
     val keyForSets = arrayOf(
             "PARAMETER_MSB",
             "PARAMETER_LSB",
-            "MANUFACTURING_DATE_MSB",
-            "MANUFACTURING_DATE_LSB",
+            "MANUFACTURING_DATE_YEAR",
+            "MANUFACTURING_DATE_WEEK",
             "SERIAL_NUMBER_MSB",
             "SERIAL_NUMBER_LSB",
             "BATTERY_TYPE",
@@ -42,13 +44,18 @@ internal object Const {
             "ERROR_COUNTER",
             "EMPTY_1",
             "EMPTY_2",
-            "FAN_ON_COUNTER"
+            "FAN_ON_COUNTER",
+            "PARAMETER_MSB_LSB",
+            "SERIAL_NUMBER",
+            "BATTERY_CAPACITY",
+            "CHARGING_CYCLES",
+            "BATTERY_VOLTAGE"
     )
     val keyForCurrentBatteryData = arrayOf(
             "PARAMETER_FIRST",
             "PARAMETER_SECOND",
-            "MANUFACTURING_DATE_MSB",
-            "MANUFACTURING_DATE_LSB",
+            "MANUFACTURING_DATE_YEAR",
+            "MANUFACTURING_DATE_WEEK",
             "SERIAL_NUMBER_MSB",
             "SERIAL_NUMBER_LSB",
             "BATTERY_TYPE",
@@ -74,7 +81,11 @@ internal object Const {
             "STATUS_CHARGING",
             "STATUS_HMI",
             "RESERVED_1",
-            "RESERVED_2"
+            "RESERVED_2",
+            "SERIAL_NUMBER",
+            "BATTERY_CAPACITY",
+            "CHARGING_CYCLES",
+            "ACTUAL_BATTERY_VOLTAGE"
     )
 
     val keyForStatusCharging = arrayOf(
@@ -159,6 +170,25 @@ internal object Const {
             "TIME_MAX_LOAD_MSB_FIRST",
             "TIME_MAX_LOAD_MSB_LAST",
             "TIME_MAX_LOAD_LSB_FIRST",
-            "TIME_MAX_LOAD_LSB_LAST"
+            "TIME_MAX_LOAD_LSB_LAST",
+            "HARDWARE_VERSION",
+            "FIRMWARE_VERSION",
+            "SERIAL_NUMBER",
+            "N_OF_MAINS",
+            "N_OF_PLUGGED_BATTERIES",
+            "N_OF_CHARGED_BATTERIES",
+            "N_OF_PART_CHG_1",
+            "N_OF_PART_CHG_2",
+            "FAN_ON_COUNTER",
+            "FAN_TOTAL_ON_TIME",
+            "TOTAL_ON_TIME",
+            "TIME_BATTERY_PLUGGED",
+            "WAITING_TIME",
+            "TIME_CC_CHARGE",
+            "TIME_CV_CHARGE",
+            "TIME_1W_25W_LOAD",
+            "TIME_25W_75W_LOAD",
+            "TIME_75W_140W_LOAD",
+            "TIME_MAX_LOAD"
     )
 }

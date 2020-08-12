@@ -31,4 +31,16 @@ object Utils {
         val cs = (sum.inv() + 1).toByte()
         return addChecksumToCommand(data.size, data, cs)
     }
+
+    fun intToBinary(a: Int) : String {
+        var binString = Integer.toBinaryString(a)
+        while (binString.length != 8) {
+            binString = "0$binString"
+        }
+        return binString
+    }
+    fun convertBinaryToDecimal(num: String): String {
+
+        return Integer.parseInt(num,2).toString();
+    }
 }
