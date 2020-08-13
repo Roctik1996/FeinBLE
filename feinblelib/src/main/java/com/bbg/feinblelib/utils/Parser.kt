@@ -126,7 +126,7 @@ object Parser {
                                     .append(intToBinary(parseResult["SERIAL_NUMBER_MSB_LAST"].toString().toInt()))
                                     .append(intToBinary(parseResult["SERIAL_NUMBER_LSB_FIRST"].toString().toInt()))
                                     .append(intToBinary(parseResult["SERIAL_NUMBER_LSB_LAST"].toString().toInt()))
-                            parseResult["SERIAL_NUMBER"] = StringBuilder().append("20").append(convertBinaryToDecimal(serialBit.toString())).toString()
+                            parseResult["SERIAL_NUMBER"] = StringBuilder().append("20").append(String.format("%10s",convertBinaryToDecimal(serialBit.toString())).replace(" ","0")).toString()
 
                             val mainsBit = StringBuilder()
                             mainsBit.append(intToBinary(parseResult["N_OF_MAINS_MSB"].toString().toInt()))
