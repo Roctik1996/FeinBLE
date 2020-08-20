@@ -88,6 +88,17 @@ internal object Const {
             "ACTUAL_BATTERY_VOLTAGE"
     )
 
+    val keyForStatus = arrayOf(
+            "PACK_OK",
+            "TEMP_OK",
+            "CURRENT_OK",
+            "VOLTAGE_OK",
+            "SENSE_OK",
+            "CHG_DSG",
+            "RESERVED",
+            "BALANCING"
+    )
+
     val keyForStatusCharging = arrayOf(
             "BATTERY_PLUGGED",
             "CC_CHARGE",

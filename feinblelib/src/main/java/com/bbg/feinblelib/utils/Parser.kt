@@ -1,5 +1,6 @@
 package com.bbg.feinblelib.utils
 
+import com.bbg.feinblelib.utils.Const.keyForStatus
 import com.bbg.feinblelib.utils.Const.keyForStatusCharging
 import com.bbg.feinblelib.utils.Const.keyForStatusHMI
 import com.bbg.feinblelib.utils.Utils.convertBinaryToDecimal
@@ -310,10 +311,18 @@ object Parser {
         for (i in bitStatusHMIArray.indices)
             statusHMIResult[keyForStatusHMI[i]] = bitStatusHMIArray[i].toString()
 
+        val statusData = (data["STATUS"]!!.toUByte())
+        val statusResult = HashMap<String, String>()
+        val status = String.format("%8s", Integer.toBinaryString(statusData.toInt() and 0xFF)).replace(' ', '0')
+        val bitStatusArray = status.toCharArray()
+        for (i in bitStatusArray.indices)
+            statusResult[keyForStatus[i]] = bitStatusArray[i].toString()
+
         val parseResult = HashMap<String, String>()
         parseResult.putAll(data)
         parseResult.putAll(statusChargerResult)
         parseResult.putAll(statusHMIResult)
+        parseResult.putAll(statusResult)
 
         val year = Calendar.getInstance().get(Calendar.YEAR)
         val yyyy = StringBuilder().append(year.toString().substring(0, 2))
