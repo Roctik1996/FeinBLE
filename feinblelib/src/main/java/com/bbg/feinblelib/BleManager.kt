@@ -496,6 +496,32 @@ open class BleManager {
     }
 
     /**
+     * remove flash memory
+     *
+     * @param bleDevice
+     * @param callback
+     */
+    @ExperimentalUnsignedTypes
+    fun removeFlashMemory(bleDevice: BleDevice?,
+                           callback: BleReadCallback?) {
+        val data = byteArrayOf(Sender_ID, Destination_ID, 0x04, 0x00, 0x0A.toByte(), 0x00, 0x00)
+        val writeCallback: BleWriteCallback = object : BleWriteCallback() {
+            override fun onWriteSuccess(current: Int, total: Int, justWrite: ByteArray?) {
+                BleLog.i("command: remove flash memory - success")
+                if (callback != null) {
+                    instance.read(bleDevice, callback)
+                }
+            }
+
+            override fun onWriteFailure(exception: BleException?) {
+                BleLog.w("command: remove flash memory - fail")
+                callback?.onReadFailure(exception)
+            }
+        }
+        write(bleDevice, Utils.dataWithChecksum(data), writeCallback)
+    }
+
+    /**
      * read
      *
      * @param bleDevice

@@ -114,6 +114,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_battery_data" />
 
+    <Button
+        android:id="@+id/btn_remove"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="20dp"
+        android:text="Remove flash memory"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_charger_log_data" />
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -124,7 +137,7 @@
         android:background="@drawable/bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_charger_log_data"
+        app:layout_constraintTop_toBottomOf="@id/btn_remove"
         app:layout_constraintBottom_toBottomOf="parent">
         <LinearLayout
             android:layout_width="match_parent"

@@ -35,6 +35,7 @@ class CommandActivity : AppCompatActivity(), Observer {
         val setsBtn = findViewById<Button>(R.id.btn_sets)
         val batteryDataBtn = findViewById<Button>(R.id.btn_battery_data)
         val chargerLogBtn = findViewById<Button>(R.id.btn_charger_log_data)
+        val removeBtn = findViewById<Button>(R.id.btn_remove)
         val resultCommand = findViewById<TextView>(R.id.txt)
         bleDevice = intent.getParcelableExtra(KEY_DATA) as BleDevice?
         if (bleDevice == null) {
@@ -271,6 +272,29 @@ class CommandActivity : AppCompatActivity(), Observer {
                     bleDevice, object : BleReadCallback() {
                 override fun onReadSuccess(data: HashMap<*, *>?) {
                     resultCommand.text = resultCommand.text as String + "read the charger log data" +
+                            "\ncommand: " + LogUtils.getCommand() +
+                            "\nresponse: " + LogUtils.response +
+                            "\nparsed response: "
+                    val sorted: TreeMap<Any?, Any?> = TreeMap(data)
+                    val mappings: MutableSet<MutableMap.MutableEntry<Any?, Any?>> = sorted.entries
+                    for ((key1, value) in mappings) {
+                        resultCommand.text = resultCommand.text as String + "\n" + key1 + ":" + value
+                    }
+                    resultCommand.text = resultCommand.text as String + "\n___________________________\n"
+                }
+
+                override fun onReadFailure(exception: BleException?) {
+                    BleLog.e(exception.toString())
+                }
+            })
+        }
+
+        //remove flash memory
+        removeBtn.setOnClickListener {
+            instance.removeFlashMemory(
+                    bleDevice, object : BleReadCallback() {
+                override fun onReadSuccess(data: HashMap<*, *>?) {
+                    resultCommand.text = resultCommand.text as String + "remove flash memory" +
                             "\ncommand: " + LogUtils.getCommand() +
                             "\nresponse: " + LogUtils.response +
                             "\nparsed response: "

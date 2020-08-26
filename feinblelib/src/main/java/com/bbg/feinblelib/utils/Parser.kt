@@ -233,6 +233,11 @@ object Parser {
                             parseResult["ERROR"] = "CS error / command not OK"
                             return parseResult
                         }
+
+                        "0x000A" -> {
+                            parseResult["SUCCESS"] = "success"
+                            return parseResult
+                        }
                         else -> {
                             parseResult["ERROR"] = "command not OK"
                             return parseResult
