@@ -26,6 +26,7 @@ Android Bluetooth Low Energy
 	            .setSplitWriteNum(20)
 	            .setConnectOverTime(10000)
                 .setOperateTimeout(5000)
+				.setCommandDelay(100)
 
 - #### Scan
 

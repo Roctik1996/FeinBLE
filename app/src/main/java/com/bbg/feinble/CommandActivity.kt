@@ -52,6 +52,8 @@ class CommandActivity : AppCompatActivity(), Observer {
             }
         })
 
+        instance.setCommandDelay(100)
+
         //read current communication protocol version
         protocolBtn.setOnClickListener {
             instance.readProtocolVersion(

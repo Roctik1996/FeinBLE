@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Handler
 import android.os.Looper
 import com.bbg.feinblelib.bluetooth.BleBluetooth
 import com.bbg.feinblelib.bluetooth.MultipleBluetoothController
@@ -87,6 +88,14 @@ open class BleManager {
      * @return
      */
     var connectOverTime = DEFAULT_CONNECT_OVER_TIME.toLong()
+        private set
+
+    /**
+     * Get command delay
+     *
+     * @return
+     */
+    var commandDelay = DEFAULT_DELAY
         private set
 
     private object BleManagerHolder {
@@ -175,6 +184,19 @@ open class BleManager {
             time = 100
         }
         connectOverTime = time
+        return this
+    }
+
+    /**
+     * Set command delay
+     *
+     * @param delay
+     * @return BleManager
+     */
+    fun setCommandDelay(delay: Long): BleManager {
+        var delay = delay
+        if (delay < DEFAULT_DELAY) delay = DEFAULT_DELAY
+        commandDelay = delay
         return this
     }
 
@@ -535,9 +557,12 @@ open class BleManager {
         if (bleBluetooth == null) {
             callback.onReadFailure(OtherException("This device is not connected!"))
         } else {
-            bleBluetooth.newBleConnector()
-                    .withUUIDString(serviceUuid, characteristicUuid)
-                    .readCharacteristic(callback, characteristicUuid,false)
+            Handler().postDelayed({
+                bleBluetooth.newBleConnector()
+                        .withUUIDString(serviceUuid, characteristicUuid)
+                        .readCharacteristic(callback, characteristicUuid,false)
+            }, commandDelay)
+
         }
     }
 
@@ -931,6 +956,7 @@ open class BleManager {
         private const val deviceInformationServiceUuid = "180A"
         private const val characteristicUuid = "fc53a934-835b-0001-0001-7f438fd97a02"
         private const val baseBluetoothUuidPostfix = "0000-1000-8000-00805F9B34FB"
+        private const val DEFAULT_DELAY = 80L
 
         @kotlin.jvm.JvmStatic
         val instance: BleManager
