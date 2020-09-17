@@ -129,9 +129,11 @@ abstract class BleScanPresenter : LeScanCallback {
 
     fun notifyScanStopped() {
         mHandling = false
-        mHandlerThread!!.quit()
-        removeHandlerMsg()
-        mMainHandler.post { onScanFinished(mBleDeviceList) }
+        if (mHandlerThread != null) {
+            mHandlerThread!!.quit()
+            removeHandlerMsg()
+            mMainHandler.post { onScanFinished(mBleDeviceList) }
+        }
     }
 
     private fun removeHandlerMsg() {

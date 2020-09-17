@@ -11,6 +11,7 @@ import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.experimental.inv
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 
@@ -81,14 +82,26 @@ object Parser {
                                     .append(intToBinary(parseResult["PARAMETER_LSB"].toString().toInt()))
                             parseResult["PARAMETER_MSB_LSB"] = convertBinaryToDecimal(parameterBit.toString())
 
-                            val year = Calendar.getInstance().get(Calendar.YEAR)
-                            val yyyy = StringBuilder().append(year.toString().substring(0, 2))
-                                    .append(parseResult["MANUFACTURING_DATE_YEAR"].toString())
-                            val mm = String.format("%02d", (parseResult["MANUFACTURING_DATE_WEEK"].toString().toInt() / 4.3).roundToInt())
-
                             val serialNumBit = StringBuilder()
                             serialNumBit.append(intToBinary(parseResult["SERIAL_NUMBER_MSB"].toString().toInt()))
                                     .append(intToBinary(parseResult["SERIAL_NUMBER_LSB"].toString().toInt()))
+
+                            val year = Calendar.getInstance().get(Calendar.YEAR)
+                            val yyyy = StringBuilder().append(year.toString().substring(0, 2))
+                                    .append(parseResult["MANUFACTURING_DATE_YEAR"].toString())
+                            val month = String.format("%02d", (parseResult["MANUFACTURING_DATE_WEEK"].toString().toInt() / 4.3).roundToInt())
+                            var mm = ""
+
+                            mm = if (month == "0") {
+                                String.format("%02d", 1)
+                            } else if (month == "13") {
+                                String.format("%02d", 12)
+                            } else if (convertBinaryToDecimal(serialNumBit.toString()).toInt() > 2500 && month.toDouble() % 1 < 0.5) {
+                                val newValue = ceil((parseResult["MANUFACTURING_DATE_WEEK"].toString().toInt() / 4.3).roundToInt() / 4.3).toInt()
+                                String.format("%02d", newValue)
+                            } else {
+                                String.format("%02d", month.toInt())
+                            }
                             val xxxxxx = StringBuilder().append("2").append(String.format("%05d", convertBinaryToDecimal(serialNumBit.toString()).toInt()))
                             parseResult["SERIAL_NUMBER"] = StringBuilder().append(yyyy).append(mm).append(xxxxxx).toString()
 
@@ -127,7 +140,7 @@ object Parser {
                                     .append(intToBinary(parseResult["SERIAL_NUMBER_MSB_LAST"].toString().toInt()))
                                     .append(intToBinary(parseResult["SERIAL_NUMBER_LSB_FIRST"].toString().toInt()))
                                     .append(intToBinary(parseResult["SERIAL_NUMBER_LSB_LAST"].toString().toInt()))
-                            parseResult["SERIAL_NUMBER"] = StringBuilder().append("20").append(String.format("%10s",convertBinaryToDecimal(serialBit.toString())).replace(" ","0")).toString()
+                            parseResult["SERIAL_NUMBER"] = StringBuilder().append("20").append(String.format("%10s", convertBinaryToDecimal(serialBit.toString())).replace(" ", "0")).toString()
 
                             val mainsBit = StringBuilder()
                             mainsBit.append(intToBinary(parseResult["N_OF_MAINS_MSB"].toString().toInt()))
@@ -329,14 +342,27 @@ object Parser {
         parseResult.putAll(statusHMIResult)
         parseResult.putAll(statusResult)
 
-        val year = Calendar.getInstance().get(Calendar.YEAR)
-        val yyyy = StringBuilder().append(year.toString().substring(0, 2))
-                .append(parseResult["MANUFACTURING_DATE_YEAR"].toString())
-        val mm = String.format("%02d", (parseResult["MANUFACTURING_DATE_WEEK"].toString().toInt() / 4.3).roundToInt())
-
         val serialNumBit = StringBuilder()
         serialNumBit.append(intToBinary(parseResult["SERIAL_NUMBER_MSB"].toString().toInt()))
                 .append(intToBinary(parseResult["SERIAL_NUMBER_LSB"].toString().toInt()))
+
+        val year = Calendar.getInstance().get(Calendar.YEAR)
+        val yyyy = StringBuilder().append(year.toString().substring(0, 2))
+                .append(parseResult["MANUFACTURING_DATE_YEAR"].toString())
+        val month = String.format("%02d", (parseResult["MANUFACTURING_DATE_WEEK"].toString().toInt() / 4.3).roundToInt())
+        var mm = ""
+
+        mm = if (month == "0") {
+            String.format("%02d", 1)
+        } else if (month == "13") {
+            String.format("%02d", 12)
+        } else if (convertBinaryToDecimal(serialNumBit.toString()).toInt() > 2500 && month.toDouble() % 1 < 0.5) {
+            val newValue = ceil((parseResult["MANUFACTURING_DATE_WEEK"].toString().toInt() / 4.3).roundToInt() / 4.3).toInt()
+            String.format("%02d", newValue)
+        } else {
+            String.format("%02d", month.toInt())
+        }
+
         val xxxxxx = StringBuilder().append("2").append(String.format("%05d", convertBinaryToDecimal(serialNumBit.toString()).toInt()))
         parseResult["SERIAL_NUMBER"] = StringBuilder().append(yyyy).append(mm).append(xxxxxx).toString()
 
