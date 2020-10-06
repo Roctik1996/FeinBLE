@@ -8,6 +8,7 @@ import com.bbg.feinblelib.utils.Utils.intToBinary
 import java.nio.ByteBuffer
 import java.nio.CharBuffer
 import java.nio.charset.Charset
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.experimental.inv
@@ -104,6 +105,8 @@ object Parser {
                             }
                             val xxxxxx = StringBuilder().append("2").append(String.format("%05d", convertBinaryToDecimal(serialNumBit.toString()).toInt()))
                             parseResult["SERIAL_NUMBER"] = StringBuilder().append(yyyy).append(mm).append(xxxxxx).toString()
+
+                            parseResult["SERIAL_NUMBER_2"] = StringBuilder().append(yyyy).append(getMonthFromWeek(getValues(data, *Const.keyForSets))).append(xxxxxx).toString()
 
                             val batteryCapacityBit = StringBuilder()
                             batteryCapacityBit.append(intToBinary(parseResult["BATTERY_CAPACITY_MSB"].toString().toInt()))
@@ -310,6 +313,15 @@ object Parser {
         for ((k, i) in (5 until getLastNonZeroIndex(data)).withIndex()) {
             parseResult[keys[k]] = (data[i].toUByte() and 255u).toString()
         }
+        if(parseResult["MANUFACTURING_DATE_YEAR"]!=null&&
+                parseResult["MANUFACTURING_DATE_WEEK"]!=null&&
+                parseResult["STATUS"]!=null) {
+            if (parseResult["MANUFACTURING_DATE_YEAR"].equals("0") &&
+                    parseResult["MANUFACTURING_DATE_WEEK"].equals("0") &&
+                    parseResult["STATUS"].equals("0")) {
+                parseResult["BATTERY_UNPLUGGED"] = "1"
+            } else parseResult["BATTERY_UNPLUGGED"] = "0"
+        }
         return parseResult
     }
 
@@ -366,6 +378,9 @@ object Parser {
         val xxxxxx = StringBuilder().append("2").append(String.format("%05d", convertBinaryToDecimal(serialNumBit.toString()).toInt()))
         parseResult["SERIAL_NUMBER"] = StringBuilder().append(yyyy).append(mm).append(xxxxxx).toString()
 
+        parseResult["SERIAL_NUMBER_2"] = StringBuilder().append(yyyy).append(getMonthFromWeek(parseResult)).append(xxxxxx).toString()
+
+        testMonthFromWeek(parseResult,yyyy.toString(),xxxxxx.toString())
 
         val batteryCapacityBit = StringBuilder()
         batteryCapacityBit.append(intToBinary(parseResult["BATTERY_CAPACITY_MSB"].toString().toInt()))
@@ -385,6 +400,57 @@ object Parser {
         return parseResult
     }
 
+    private fun getMonthFromWeek(data: HashMap<String, String>):String{
+        val year = Calendar.getInstance().get(Calendar.YEAR)
+        val weekOfYear = data["MANUFACTURING_DATE_WEEK"].toString().toInt()
+
+        val calendar = Calendar.getInstance()
+        calendar.clear()
+        calendar[Calendar.WEEK_OF_YEAR] = weekOfYear
+        calendar[Calendar.YEAR] = year
+        val formatter = SimpleDateFormat("MM") // PST`
+        val startDate = calendar.time
+        val startDateInt: Int = formatter.format(startDate).toInt()
+        calendar.add(Calendar.DATE, 6)
+        val enddate = calendar.time
+        val endDateInt: Int = formatter.format(enddate).toInt()
+
+        if(startDateInt>endDateInt)
+            return "01"
+        else if (startDateInt<endDateInt){
+            return endDateInt.toString()
+        }
+        else if (startDateInt==endDateInt){
+            return endDateInt.toString()
+        }
+        return ""
+    }
+
+    private fun testMonthFromWeek(data: HashMap<String, String>,yyyy:String,xxxxxx:String){
+        val year = Calendar.getInstance().get(Calendar.YEAR)
+
+        for (weekOfYear in 1..52) {
+            val calendar = Calendar.getInstance()
+            calendar.clear()
+            calendar[Calendar.WEEK_OF_YEAR] = weekOfYear
+            calendar[Calendar.YEAR] = year
+            val formatter = SimpleDateFormat("MM") // PST`
+            val startDate = calendar.time
+            val startDateInt: Int = formatter.format(startDate).toInt()
+            calendar.add(Calendar.DATE, 6)
+            val enddate = calendar.time
+            val endDateInt: Int = formatter.format(enddate).toInt()
+
+            if (startDateInt > endDateInt)
+                println("serial if end of month been in past year: "+yyyy + "01" + xxxxxx)
+            else if (startDateInt<endDateInt){
+                println("serial if end and start of month been in current week: "+yyyy + endDateInt.toString() + xxxxxx)
+            }
+            else if (startDateInt == endDateInt) {
+                println("serial if end of month been in current week: "+yyyy + endDateInt.toString() + xxxxxx)
+            }
+        }
+    }
     private fun getChecksum(data: ByteArray): Byte {
         var sum: Byte = 0
         for (i in 0 until data.size - 1) {

@@ -85,7 +85,8 @@ internal object Const {
             "SERIAL_NUMBER",
             "BATTERY_CAPACITY",
             "CHARGING_CYCLES",
-            "ACTUAL_BATTERY_VOLTAGE"
+            "ACTUAL_BATTERY_VOLTAGE",
+            "BATTERY_UNPLUGGED"
     )
 
     val keyForStatus = arrayOf(
